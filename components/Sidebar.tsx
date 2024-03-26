@@ -1,10 +1,6 @@
 "use client";
-
 import { useState } from "react";
 import { Nav } from "./ui/nav";
-
-type Props = {};
-
 import {
   LayoutDashboard,
   UsersRound,
@@ -13,14 +9,16 @@ import {
   Megaphone,
   Radio,
   ChevronRightIcon,
+  ChevronRight,
 } from "lucide-react";
-import { Button } from "./ui/button";
+
+type Props = {};
 
 import { useWindowWidth } from "@react-hook/window-size";
+import { Button } from "@/components/ui/button";
 
 export default function SideNavbar({}: Props) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   const onlyWidth = useWindowWidth();
   const mobileWidth = onlyWidth < 768;
 
@@ -29,17 +27,26 @@ export default function SideNavbar({}: Props) {
   }
 
   return (
-    <div className="relative min-w-[100px] border-r px-3  pb-10 pt-24 ">
+    <div className="relative min-w-[100px] border-r px-3 pb-10 pt-24">
+      {/* {!mobileWidth && (
+        <div className="absolute right-[-20px] top-7">
+          <Button
+            onClick={toggleSidebar}
+            variant="outline"
+            className=" rounded-full p-2"
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+      )}*/}
       <Nav
-        /*
         isCollapsed={mobileWidth ? true : isCollapsed}
-*/
         links={[
           {
             title: "Dashboard",
             href: "/",
             icon: LayoutDashboard,
-            variant: "default",
+            variant: "ghost",
           },
           {
             title: "Courses",
@@ -49,19 +56,14 @@ export default function SideNavbar({}: Props) {
           },
           {
             title: "Announcement",
-            href: "/announcement",
+            href: "/announcements",
             icon: Megaphone,
             variant: "ghost",
           },
-          {
-            title: "Lives",
-            href: "/lives",
-            icon: Radio,
-            variant: "ghost",
-          },
+          { title: "Lives", href: "/lives", icon: Radio, variant: "ghost" },
           {
             title: "Students",
-            href: "/Students",
+            href: "/students",
             icon: UsersRound,
             variant: "ghost",
           },

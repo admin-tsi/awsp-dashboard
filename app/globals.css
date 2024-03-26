@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  .dark {
+    --background: 200, 6%, 11%;
+    --foreground: 0 ,0%, 97.8%;
+
+    --card: 200, 6%, 11%;
+    --card-foreground: 60 9.1% 97.8%;
+
+    --popover: 200, 6%, 11%;
+    --popover-foreground: 60 9.1% 97.8%;
+
+    --primary: 51, 84%, 67%;
+    --primary-foreground: 0, 0%, 100%;
+
+    --secondary: 351, 88%, 48%;
+    --secondary-foreground: 0, 0%, 100%;
+
+    --muted: 192, 8%, 14%;
+    --muted-foreground: 24 5.4% 63.9%;
+
+    --accent: 189, 9%, 31%;
+    --accent-foreground: 60 9.1% 97.8%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+
+    --border: 190, 9%, 20%;
+    --input: 24 5.7% 82.9%;
+    --ring: 24 5.7% 82.9%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+  max-height: 50%; height: 50%;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+/* Scrollbar */
+
+.spinner {
+  width: 150%;
+  height: 157%;
+  background-image: radial-gradient(
+          transparent,
+          transparent,
+          #F2DD66,
+          #E50E2D,
+          transparent
+  );
+  animation: spinner 2s linear infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
