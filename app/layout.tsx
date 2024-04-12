@@ -2,7 +2,7 @@ import React from "react";
 import { Raleway } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header"; // Ensure the path is correct
+import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 
 const raleway = Raleway({
@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(raleway.className, "dark")}>
         <div className="flex flex-col h-screen">
-          <Header userName="John Doe" />
+          <Header />
           <div className="flex flex-1 overflow-hidden">
             <Sidebar />
             <main className="flex-1 p-8 bg-muted overflow-y-auto">

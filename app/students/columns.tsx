@@ -31,7 +31,7 @@ export const columns: ColumnDef<Students>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name", // Assuming you have a 'name' field for the users
+    accessorKey: "name",
     header: "Name",
     cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
@@ -39,7 +39,7 @@ export const columns: ColumnDef<Students>[] = [
     accessorKey: "progress",
     header: "Progress",
     cell: ({ row }) => {
-      const progressValue: number = row.getValue("progress"); // Assuming this is a percentage (0-100)
+      const progressValue: number = row.getValue("progress");
       return (
         <div className="flex items-center">
           <Progress value={progressValue} className="w-[60%] mx-2" />
@@ -49,10 +49,9 @@ export const columns: ColumnDef<Students>[] = [
     },
   },
   {
-    accessorKey: "userStatus", // New column for user status
+    accessorKey: "userStatus",
     header: "Status",
     cell: ({ row }) => {
-      // Example of how you might want to display user status
       const status: string = row.getValue("userStatus");
       const statusColor =
         status === "Active" ? "text-green-500" : "text-red-500";
@@ -60,7 +59,7 @@ export const columns: ColumnDef<Students>[] = [
     },
   },
   {
-    accessorKey: "lastLogin", // Assuming you want to show the last login date
+    accessorKey: "lastLogin",
     header: "Last Login",
     cell: ({ row }) => {
       const dateValue = new Date(row.getValue("lastLogin"));

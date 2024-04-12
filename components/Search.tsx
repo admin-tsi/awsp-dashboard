@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 export function SearchInput({ className }: { className?: string }) {
   return (
     <div className={cn("relative w-full max-w-sm", className)}>
