@@ -7,7 +7,7 @@ import logo from "@/public/logo.svg";
 import { Button } from "@/components/ui/button";
 import { Bell, Globe } from "lucide-react";
 
-const Header = ({ userName = "User" }) => {
+const Header = () => {
   return (
     <div className="relative min-w-full border-b-[1px] px-2 sm:px-4 py-4 flex items-center">
       <div className="flex items-center mr-4">

@@ -1,4 +1,3 @@
-import PageTitle from "@/components/PageTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -9,41 +8,21 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Activity,
   ArrowUpRight,
   CreditCard,
   DollarSign,
-  Link,
   Users,
 } from "lucide-react";
 import { Overview } from "@/components/Overview";
-
-interface CardData {
-  id: number;
-  imageUrl: string;
-  title: string;
-  subtitle: string;
-}
-
-const cards: CardData[] = [
-  // Card data remains unchanged
-];
+import Courses from "@/components/dashboard/courses/page";
 
 export default function Page() {
   return (
     <main className="flex flex-col gap-5 w-full">
-      <PageTitle title="Courses" />
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="w-full rounded-none justify-start">
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -134,7 +113,11 @@ export default function Page() {
                 <CardContent className="grid gap-8">
                   <div className="flex items-center gap-4">
                     <Avatar className="hidden h-9 w-9 sm:flex">
-                      <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                      <AvatarImage
+                        src="https://i.pinimg.com/564x/72/d7/cc/72d7cc32e51ef9c829011bb9bf84f36a.jpg"
+                        alt="Avatar"
+                        className="object-cover"
+                      />
                       <AvatarFallback>OM</AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1">
@@ -149,7 +132,11 @@ export default function Page() {
                   </div>
                   <div className="flex items-center gap-4">
                     <Avatar className="hidden h-9 w-9 sm:flex">
-                      <AvatarImage src="/avatars/02.png" alt="Avatar" />
+                      <AvatarImage
+                        src="https://i.pinimg.com/564x/72/d7/cc/72d7cc32e51ef9c829011bb9bf84f36a.jpg"
+                        alt="Avatar"
+                        className="object-cover"
+                      />
                       <AvatarFallback>JL</AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1">
@@ -164,7 +151,11 @@ export default function Page() {
                   </div>
                   <div className="flex items-center gap-4">
                     <Avatar className="hidden h-9 w-9 sm:flex">
-                      <AvatarImage src="/avatars/03.png" alt="Avatar" />
+                      <AvatarImage
+                        src="https://i.pinimg.com/564x/72/d7/cc/72d7cc32e51ef9c829011bb9bf84f36a.jpg"
+                        alt="Avatar"
+                        className="object-cover"
+                      />
                       <AvatarFallback>IN</AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1">
@@ -179,7 +170,11 @@ export default function Page() {
                   </div>
                   <div className="flex items-center gap-4">
                     <Avatar className="hidden h-9 w-9 sm:flex">
-                      <AvatarImage src="/avatars/04.png" alt="Avatar" />
+                      <AvatarImage
+                        src="https://i.pinimg.com/564x/72/d7/cc/72d7cc32e51ef9c829011bb9bf84f36a.jpg"
+                        alt="Avatar"
+                        className="object-cover"
+                      />
                       <AvatarFallback>WK</AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1">
@@ -194,7 +189,11 @@ export default function Page() {
                   </div>
                   <div className="flex items-center gap-4">
                     <Avatar className="hidden h-9 w-9 sm:flex">
-                      <AvatarImage src="/avatars/05.png" alt="Avatar" />
+                      <AvatarImage
+                        src="https://i.pinimg.com/564x/72/d7/cc/72d7cc32e51ef9c829011bb9bf84f36a.jpg"
+                        alt="Avatar"
+                        className="object-cover"
+                      />
                       <AvatarFallback>SD</AvatarFallback>
                     </Avatar>
                     <div className="grid gap-1">
@@ -212,7 +211,9 @@ export default function Page() {
             </div>
           </div>
         </TabsContent>
-        <TabsContent value="courses"></TabsContent>
+        <TabsContent value="courses">
+          <Courses />
+        </TabsContent>
       </Tabs>
     </main>
   );

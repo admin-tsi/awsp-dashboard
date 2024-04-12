@@ -58,7 +58,7 @@ export default function Page() {
         </TabsList>
         <Separator />
         <TabsContent value="published">
-          <div className="flex flex-wrap justify-between py-10">
+          <div className="flex flex-wrap gap-1 justify-between py-10">
             {cards.map((card) => (
               <Card
                 key={card.id}
