@@ -18,6 +18,8 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import Header from "@/components/addTopics/header";
+import Index from "@/components/addTopics/Index";
 
 const FormSchema = z.object({
   title: z.string(),
@@ -135,7 +137,7 @@ export default function Page() {
                         <Input {...field} />
                       </FormControl>
                       <FormDescription>
-                        Estimated completion time (e.g., "4 weeks").
+                        Estimated completion time (e.g., &quot;4 weeks&quot;).
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -181,7 +183,8 @@ export default function Page() {
                         <p>{thumbnail.name}</p>
                       ) : (
                         <p>
-                          Drag 'n' drop thumbnail here, or click to select files
+                          Drag &apos;n&apos; drop thumbnail here, or click to
+                          select files
                         </p>
                       )}
                     </div>
@@ -200,7 +203,8 @@ export default function Page() {
                         <p>{introVideo.name}</p>
                       ) : (
                         <p>
-                          Drag 'n' drop video here, or click to select files
+                          Drag &apos;n&apos; drop video here, or click to select
+                          files
                         </p>
                       )}
                     </div>
@@ -217,7 +221,28 @@ export default function Page() {
                   >
                     Previous
                   </Button>
-                  <Button variant="outline" type="submit">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setStep(3)}
+                  >
+                    Continue
+                  </Button>
+                </div>
+              </>
+            )}
+            {step === 3 && (
+              <>
+                <Index />
+                <div className="flex space-x-4 mt-52">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setStep(2)}
+                  >
+                    Previous
+                  </Button>
+                  <Button type="button" variant="outline">
                     Submit
                   </Button>
                 </div>
