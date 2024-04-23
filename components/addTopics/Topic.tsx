@@ -6,6 +6,9 @@ import {
 } from "@/components/ui/accordion";
 import Action from "./action";
 import TopicHeader from "./topicHeader";
+import Lesson from "../modals/Lesson";
+import Quiz from "../modals/Quiz";
+import Assignment from "../modals/Assignment";
 
 type Props = {};
 
@@ -25,9 +28,9 @@ const Topic = (props: Props) => {
             className="border py-2 px-5 rounded-[10px]"
           />
           <div className="flex space-x-2 pt-5 overflow-scroll">
-            <Action action="Lesson" />
-            <Action action="Quiz" />
-            <Action action="Assignments" />
+            <Lesson action="Lesson" />
+            <Quiz action="Quiz" />
+            <Assignment action="Assignments" />
           </div>
         </AccordionContent>
       </AccordionItem>
