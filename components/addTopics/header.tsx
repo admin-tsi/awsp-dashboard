@@ -48,7 +48,7 @@ const Header = (props: Props) => {
                   className="rounded-[10px] text-white"
                 />
               </div>
-              <p className="mt-2">
+              <p className="mt-5">
                 This action cannot be undone. It will create your module and you
                 will be able to add courses, quizzes and exercises from the
                 appropriate space.
@@ -57,7 +57,7 @@ const Header = (props: Props) => {
           </DialogHeader>
           <DialogFooter>
             <Button type="submit" className="text-black rounded-[10px]">
-              Save changes
+              Save Topic
             </Button>
           </DialogFooter>
         </DialogContent>

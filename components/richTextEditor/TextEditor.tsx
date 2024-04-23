@@ -29,8 +29,11 @@ const TextEditor = ({ title }: Props) => {
     setContent("");
   };
   return (
-    <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-3">
-      <h1 className="font-bold text-white">{title}</h1>
+    <form
+      onSubmit={handleSubmit}
+      className="w-full flex flex-col space-y-3 mb-3"
+    >
+      <h1 className="font-bold text-left text-white">{title}</h1>
       <Tiptap
         content={content}
         onChange={(newContent: string) => handleContentChange(newContent)}
