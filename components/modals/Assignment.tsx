@@ -11,6 +11,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../ui/button";
+import TextEditor from "../richTextEditor/TextEditor";
+import { Input } from "../ui/input";
 
 type Props = {
   action: string;
@@ -36,19 +38,54 @@ const Assignment = ({ action }: Props) => {
           <span>{action}</span>
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="overflow-y-scroll">
         <AlertDialogHeader>
           <AlertDialogTitle className="border-b pb-3">
             {action}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+          <AlertDialogDescription className="flex flex-col space-y-5 w-full">
+            <div className="flex flex-col w-full space-y-2 mt-5">
+              <span className="text-white font-bold text-left">
+                Assignment title
+              </span>
+              <Input
+                type="text"
+                id="TopciName"
+                placeholder="Kinesiology"
+                className="rounded-[10px] text-white"
+              />
+            </div>
+            <div className="mb-28">
+              <TextEditor title="Summary" />
+            </div>
+            <div className="flex flex-col w-full space-y-2 mt-5">
+              <span className="text-white font-bold">
+                Maximum file size limit
+              </span>
+              <Input
+                type="text"
+                id="TopciName"
+                className="rounded-[10px] text-white"
+                placeholder="0"
+              />
+            </div>
+            <div className="flex flex-col w-full space-y-2 mt-5">
+              <span className="text-white font-bold">Upload attachements</span>
+              <Input
+                type="file"
+                id="TopciName"
+                className="rounded-[10px] text-white"
+              />
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogCancel className="rounded-[10px]">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction className="rounded-[10px] text-black">
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
