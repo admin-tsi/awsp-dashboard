@@ -1,11 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   .dark {
     --background: 200, 6%, 11%;
-    --foreground: 0 ,0%, 97.8%;
+    --foreground: 0, 0%, 97.8%;
 
     --card: 200, 6%, 11%;
     --card-foreground: 60 9.1% 97.8%;
@@ -33,7 +33,7 @@
     --ring: 24 5.7% 82.9%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -55,7 +55,8 @@
 ::-webkit-scrollbar-thumb {
   background: transparent;
   border-radius: 4px;
-  max-height: 50%; height: 50%;
+  max-height: 50%;
+  height: 50%;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -67,11 +68,11 @@
   width: 150%;
   height: 157%;
   background-image: radial-gradient(
-          transparent,
-          transparent,
-          #F2DD66,
-          #E50E2D,
-          transparent
+    transparent,
+    transparent,
+    #f2dd66,
+    #e50e2d,
+    transparent
   );
   animation: spinner 2s linear infinite;
 }
@@ -83,4 +84,19 @@
   100% {
     transform: translate(-50%, -50%) rotate(360deg);
   }
+}
+
+.tiptap {
+  > * + * {
+    margin-top: 0.75em;
+  }
+}
+
+/* Placeholder (at the top) */
+.tiptap .is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
