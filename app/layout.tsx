@@ -4,6 +4,8 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/auth";
 
 const raleway = Raleway({
   variable: "--raleway-font",
@@ -11,24 +13,27 @@ const raleway = Raleway({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
-    <html lang="en">
-      <body className={cn(raleway.className, "dark")}>
-        <div className="flex flex-col h-screen">
-          <Header />
-          <div className="flex flex-1 overflow-hidden">
-            <Sidebar />
-            <main className="flex-1 p-8 bg-muted overflow-y-auto">
-              {children}
-            </main>
+    <SessionProvider session={session}>
+      <html lang="en">
+        <body className={cn(raleway.className, "dark")}>
+          <div className="flex flex-col h-screen">
+            <Header />
+            <div className="flex flex-1 overflow-hidden">
+              <Sidebar />
+              <main className="flex-1 p-8 bg-muted overflow-y-auto">
+                {children}
+              </main>
+            </div>
           </div>
-        </div>
-      </body>
-    </html>
+        </body>
+      </html>
+    </SessionProvider>
   );
 }
