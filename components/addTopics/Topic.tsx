@@ -4,11 +4,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Action from "./action";
-import TopicHeader from "./topicHeader";
+import Assignment from "../modals/Assignment";
 import Lesson from "../modals/Lesson";
 import Quiz from "../modals/Quiz";
-import Assignment from "../modals/Assignment";
+import TopicHeader from "./topicHeader";
 
 type Props = {};
 

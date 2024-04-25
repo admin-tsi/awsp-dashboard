@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,12 +11,21 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../ui/button";
+import TextEditor from "../richTextEditor/TextEditor";
+import { Input } from "../ui/input";
+import CreateQuiz from "../QuizForm/CreateQuiz";
 
 type Props = {
   action: string;
 };
 
 const Quiz = ({ action }: Props) => {
+  const [showQuizInstructions, setShowQuizInstructions] = useState(true);
+
+  const handleContinueClick = () => {
+    setShowQuizInstructions(!showQuizInstructions);
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger>
@@ -38,18 +47,64 @@ const Quiz = ({ action }: Props) => {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="border-b pb-3">
+          <AlertDialogTitle className="border-b pb-3 text-left">
             {action}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+          <AlertDialogDescription className="flex flex-col space-y-5 w-full">
+            {showQuizInstructions ? (
+              <>
+                <div className="flex flex-col w-full space-y-2 mt-5">
+                  <span className="text-white font-bold text-left">
+                    Name of the Quiz
+                  </span>
+                  <Input
+                    type="text"
+                    id="TopciName"
+                    placeholder="Kinesiology"
+                    className="rounded-[10px] text-white"
+                  />
+                </div>
+                <div className="mb-28">
+                  <TextEditor title="Quiz instructions" />
+                </div>
+              </>
+            ) : (
+              <CreateQuiz />
+            )}
+            <div className="flex justify-end items-center space-x-2">
+              {showQuizInstructions ? (
+                <AlertDialogCancel className="rounded-[10px]">
+                  Cancel
+                </AlertDialogCancel>
+              ) : (
+                <Button
+                  variant="outline"
+                  className="rounded-[10px]"
+                  onClick={() => {
+                    handleContinueClick();
+                  }}
+                >
+                  Cancel
+                </Button>
+              )}
+
+              {showQuizInstructions ? (
+                <Button
+                  className="rounded-[10px] text-black"
+                  onClick={() => {
+                    handleContinueClick();
+                  }}
+                >
+                  Continue
+                </Button>
+              ) : (
+                <AlertDialogAction className="rounded-[10px] text-black">
+                  Close
+                </AlertDialogAction>
+              )}
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
-        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
