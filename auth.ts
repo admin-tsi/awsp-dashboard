@@ -3,11 +3,13 @@ import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
 
 export type MyUserType = {
-  id: string; // Renamed from _id to id
+  id: string;
   email: string;
   role: string;
   isverified: boolean;
-  emailVerified: Date | null; // Add emailVerified field
+  accessToken: string;
+  expireIn: number;
+  emailVerified: Date | null;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -32,8 +34,10 @@ export const {
             },
           );
 
-          const user = response.data.user;
-          if (user) {
+          const { user, token, expireIn } = response.data;
+          if (user && token) {
+            user.accessToken = token;
+            user.expireIn = expireIn;
             return user;
           } else {
             return null;
@@ -52,12 +56,12 @@ export const {
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
-        token.user = user as MyUserType; // Ensure user is treated as MyUserType
+        token.user = user as MyUserType;
       }
       return token;
     },
     session: async ({ session, token }) => {
-      session.user = token.user as MyUserType; // Add typed user data to the session
+      session.user = token.user as MyUserType;
       return session;
     },
   },

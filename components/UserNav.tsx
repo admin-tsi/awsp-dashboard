@@ -39,6 +39,7 @@ export function UserNav() {
               {user?.email.split("@")[0]}
             </p>
             <p className="text-xs leading-none font-semibold ">{user?.role}</p>
+            <p className="text-xs leading-none truncate">{user?.id}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
