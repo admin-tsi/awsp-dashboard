@@ -33,8 +33,10 @@ import {
 import { columns } from "@/app/(protected)/students/columns";
 import PageTitle from "@/components/PageTitle";
 import { useEffect, useState } from "react";
-import { deleteUser, fetchAllUsers } from "@/lib/api";
+import { deleteUser, fetchAllUsers, getUserById } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Page() {
   const [users, setUsers] = useState<any>([]);
@@ -42,16 +44,23 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const token = useCurrentToken();
 
+  const router = useRouter();
   const handleDeleteUser = async (userId: string) => {
     try {
       setLoading(true);
       await deleteUser(userId, token);
+      toast.success("User deleted successfully");
       setUsers(users.filter((user: { _id: string }) => user._id !== userId));
     } catch (error) {
+      toast.error("Failed to delete user");
       console.error("Failed to delete user", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleClick = async (id: any) => {
+    router.push(`/students/${id}/${token}`);
   };
 
   useEffect(() => {
@@ -151,7 +160,9 @@ export default function Page() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
+                  //  onClick={() => handleClick(row.original._id)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

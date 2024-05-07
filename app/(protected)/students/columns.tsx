@@ -3,6 +3,17 @@ import { Trash2 } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { User } from "@/lib/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const columns = (
   handleDelete: (userId: string) => void,
@@ -100,14 +111,35 @@ export const columns = (
     header: "Actions",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <Button
-          onClick={() => handleDelete(row.original._id)} // Pass user ID to handleDelete function
-          aria-label="Delete"
-          className="p-2 rounded hover:bg-gray-100"
-          variant="ghost"
-        >
-          <Trash2 className="h-4 text-red-500" />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              aria-label="Delete"
+              className="p-2 rounded hover:bg-gray-100"
+              variant="ghost"
+            >
+              <Trash2 className="h-4 text-red-500" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this
+                account and remove the data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-muted text-white hover:bg-red-500"
+                onClick={() => handleDelete(row.original._id)}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     ),
   },

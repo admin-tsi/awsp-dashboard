@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import { Toaster } from "sonner";
 
 const raleway = Raleway({
   variable: "--raleway-font",
@@ -29,6 +30,7 @@ export default async function RootLayout({
               <Sidebar />
               <main className="flex-1 p-8 bg-muted overflow-y-auto">
                 {children}
+                <Toaster />
               </main>
             </div>
           </div>
