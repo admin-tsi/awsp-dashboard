@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import * as React from "react";
-import { Courses } from "@/components/courses/page";
+import { Courses } from "@/components/courses/Page";
 import StarRating from "@/components/ui/rating";
 
 export const columns: ColumnDef<Courses>[] = [

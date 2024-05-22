@@ -1,27 +1,28 @@
-import { useState } from "react";
+import React from "react";
 import { Button } from "../../ui/button";
 import AnswerProposalInput from "./AnswerProposalInput";
+import { Option } from "@/lib/types";
 
 type Props = {
   title: string;
-  onElementAdded: () => void;
+  options: Option[];
+  onOptionChange: (index: number, newOption: string) => void;
 };
 
-function AnswerProposalComponent({ title, onElementAdded }: Props) {
-  const [inputs, setInputs] = useState<number[]>([]);
-
+const AnswerProposalComponent = ({ title, options, onOptionChange }: Props) => {
   const addInput = () => {
-    if (inputs.length < 4) {
-      setInputs([...inputs, inputs.length + 1]);
-      onElementAdded();
+    if (options.length < 4) {
+      const newOption: Option = { option: "", _id: Date.now().toString() };
+      onOptionChange(options.length, newOption.option);
     }
   };
 
   const removeInput = (index: number) => {
-    const newInputs = [...inputs];
-    newInputs.splice(index, 1);
-    setInputs(newInputs);
-    onElementAdded();
+    const newOptions = options.filter((_, i) => i !== index);
+    // Trigger option change with empty value to remove the input
+    newOptions.forEach((option, idx) => {
+      onOptionChange(idx, option.option);
+    });
   };
 
   return (
@@ -46,9 +47,12 @@ function AnswerProposalComponent({ title, onElementAdded }: Props) {
         </Button>
       </div>
       <div className="flex-1 h-full grid grid-cols-1 md:grid-cols-2 gap-3">
-        {inputs.map((key, index) => (
-          <div key={key} className="relative">
-            <AnswerProposalInput />
+        {options.map((option, index) => (
+          <div key={option._id} className="relative">
+            <AnswerProposalInput
+              value={option.option}
+              onChange={(e) => onOptionChange(index, e.target.value)}
+            />
             <button
               className="absolute top-0 right-1 p-1 h-full text-white"
               onClick={() => removeInput(index)}
@@ -73,6 +77,6 @@ function AnswerProposalComponent({ title, onElementAdded }: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default AnswerProposalComponent;

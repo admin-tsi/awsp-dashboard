@@ -7,17 +7,14 @@ export const LoginSchema = z.object({
   password: z.string(),
 });
 
-export const UserDetailsSchema = z.object({
+export const UserSchema = z.object({
   _id: z.string(),
+  age: z.string(),
   email: z.string().email(),
+  firstname: z.string(),
+  isverified: z.boolean(),
+  lastname: z.string(),
+  phone: z.string(),
   role: z.string(),
-  isverified: z.boolean().optional(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  __v: z.number(),
-  age: z.date(),
-  clientData: z.string(),
-  firstname: z.string().min(1),
-  lastname: z.string().min(1),
-  phone: z.string().min(6), // Assuming phone numbers should be at least 6 digits
+  clientData: z.any(),
 });

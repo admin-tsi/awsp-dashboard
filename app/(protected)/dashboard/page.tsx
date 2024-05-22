@@ -17,7 +17,7 @@ import {
   Users,
 } from "lucide-react";
 import { Overview } from "@/components/Overview";
-import Courses from "@/components/courses/page";
+import Courses from "@/components/courses/Page";
 
 export default function Page() {
   return (

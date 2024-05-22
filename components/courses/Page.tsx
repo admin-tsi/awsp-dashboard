@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { columns } from "./columns";
+import { columns } from "./Columns";
 
 const data: Courses[] = [
   {

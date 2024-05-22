@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { User } from "@/lib/types";
@@ -17,6 +17,7 @@ import {
 
 export const columns = (
   handleDelete: (userId: string) => void,
+  handleEdit: (userId: string) => void,
 ): ColumnDef<User>[] => [
   {
     id: "select",
@@ -45,18 +46,28 @@ export const columns = (
   {
     accessorKey: "email",
     header: "Email",
-    cell: ({ row }) => <div>{row.getValue("email") || "-"}</div>,
+    cell: ({ row }) => (
+      <div onClick={() => handleEdit(row.original._id)}>
+        {row.getValue("email") || "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "firstname",
     header: "First Name",
-    cell: ({ row }) => <div>{row.getValue("firstname") || "-"}</div>,
+    cell: ({ row }) => (
+      <div onClick={() => handleEdit(row.original._id)}>
+        {row.getValue("firstname") || "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "lastname",
     header: "Last Name",
     cell: ({ row }) => (
-      <div className="uppercase">{row.getValue("lastname") || "-"}</div>
+      <div className="uppercase" onClick={() => handleEdit(row.original._id)}>
+        {row.getValue("lastname") || "-"}
+      </div>
     ),
   },
   {
@@ -70,32 +81,29 @@ export const columns = (
       if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
         age--;
       }
-      return <div>{age || "-"}</div>;
+      return (
+        <div onClick={() => handleEdit(row.original._id)}>{age || "-"}</div>
+      );
     },
   },
   {
     accessorKey: "phone",
     header: "Phone",
-    cell: ({ row }) => <div>{row.getValue("phone") || "-"}</div>,
+    cell: ({ row }) => (
+      <div onClick={() => handleEdit(row.original._id)}>
+        {row.getValue("phone") || "-"}
+      </div>
+    ),
   },
   {
     accessorKey: "role",
     header: "Role",
-    cell: ({ row }) => <div>{row.getValue("role") || "-"}</div>,
+    cell: ({ row }) => (
+      <div onClick={() => handleEdit(row.original._id)}>
+        {row.getValue("role") || "-"}
+      </div>
+    ),
   },
-  /*  {
-    accessorKey: "progress",
-    header: "Progress",
-    cell: ({ row }) => {
-      const progressValue: number = row.getValue("progress");
-      return (
-        <div className="flex items-center">
-          <Progress value={progressValue} className="w-[60%] mx-2" />
-          {progressValue}%
-        </div>
-      );
-    },
-  },*/
   {
     accessorKey: "isverified",
     header: "Status",
@@ -111,6 +119,14 @@ export const columns = (
     header: "Actions",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
+        <Button
+          aria-label="Edit"
+          className="p-2 rounded hover:bg-gray-200"
+          variant="ghost"
+          onClick={() => handleEdit(row.original._id)}
+        >
+          <Pencil className="h-4 text-blue-500" />
+        </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button

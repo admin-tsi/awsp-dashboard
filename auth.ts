@@ -34,10 +34,11 @@ export const {
             },
           );
 
-          const { user, token, expireIn } = response.data;
+          const { user, token, expiresIn } = response.data;
+          console.log("expirin", response.data);
           if (user && token) {
             user.accessToken = token;
-            user.expireIn = expireIn;
+            user.expireIn = expiresIn;
             return user;
           } else {
             return null;
@@ -58,6 +59,7 @@ export const {
       if (user) {
         token.user = user as MyUserType;
       }
+
       return token;
     },
     session: async ({ session, token }) => {

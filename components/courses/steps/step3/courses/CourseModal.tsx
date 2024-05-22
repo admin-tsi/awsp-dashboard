@@ -1,3 +1,4 @@
+import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,15 +11,22 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import TextEditor from "@/components/courses/richtext-editor/TextEditor";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import { Button } from "../../../../ui/button";
+import { Input } from "../../../../ui/input";
 import DropSection from "@/components/courses/add-topics/DropSection";
+
+type CourseData = {
+  title: string;
+  description: string;
+  video: string;
+};
 
 type Props = {
   action: string;
+  courseData?: CourseData;
 };
 
-const Lesson = ({ action }: Props) => {
+const CourseModal = ({ action, courseData }: Props) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger>
@@ -50,20 +58,24 @@ const Lesson = ({ action }: Props) => {
               </span>
               <Input
                 type="text"
-                id="TopciName"
-                placeholder="Kinesiology"
+                id="CourseName"
+                defaultValue={courseData?.title}
+                placeholder="Enter course title"
                 className="rounded-[10px] text-white"
               />
             </div>
-            <TextEditor title="Lesson Description" />
-            <DropSection title="Lesson Video" />
+            <TextEditor
+              title="Course Description"
+              initialValue={courseData?.description}
+            />
+            <DropSection title="Course Video" videoSrc={courseData?.video} />
             <div className="flex flex-col w-full space-y-2 mt-5">
               <span className="text-white font-bold">
-                Upload attachements files to the lesson
+                Upload attachments files to the lesson
               </span>
               <Input
                 type="file"
-                id="TopciName"
+                id="CourseAttachments"
                 className="rounded-[10px] text-white"
               />
             </div>
@@ -82,4 +94,4 @@ const Lesson = ({ action }: Props) => {
   );
 };
 
-export default Lesson;
+export default CourseModal;

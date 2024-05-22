@@ -33,7 +33,7 @@ import {
 import { columns } from "@/app/(protected)/students/columns";
 import PageTitle from "@/components/PageTitle";
 import { useEffect, useState } from "react";
-import { deleteUser, fetchAllUsers, getUserById } from "@/lib/api";
+import { deleteUser, getAllUsers } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -60,11 +60,11 @@ export default function Page() {
   };
 
   const handleClick = async (id: any) => {
-    router.push(`/students/${id}/${token}`);
+    router.push(`/students/${id}`);
   };
 
   useEffect(() => {
-    fetchAllUsers(token)
+    getAllUsers(token)
       .then(setUsers)
       .catch(() => setError("Failed to load users"))
       .finally(() => setLoading(false));
@@ -81,7 +81,7 @@ export default function Page() {
 
   const table = useReactTable({
     data: users,
-    columns: columns(handleDeleteUser),
+    columns: columns(handleDeleteUser, handleClick),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -160,9 +160,8 @@ export default function Page() {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="cursor-pointer"
+                  className="cursor-pointer relative"
                   data-state={row.getIsSelected() && "selected"}
-                  //  onClick={() => handleClick(row.original._id)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

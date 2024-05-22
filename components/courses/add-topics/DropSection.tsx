@@ -1,17 +1,26 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../../ui/button";
-import action from "./Action";
 
 type Props = {
   title: string;
+  videoSrc?: string;
 };
 
-const DropSection = ({ title }: Props) => {
+const DropSection = ({ title, videoSrc }: Props) => {
   const [introVideo, setIntroVideo] = useState<File | null>(null);
+  const [previewSrc, setPreviewSrc] = useState<string | null>(videoSrc || null);
+
   const onVideoDrop = useCallback((acceptedFiles: File[]) => {
-    setIntroVideo(acceptedFiles[0]);
+    const file = acceptedFiles[0];
+    setIntroVideo(file);
+    setPreviewSrc(URL.createObjectURL(file));
   }, []);
+
+  const removeVideo = () => {
+    setIntroVideo(null);
+    setPreviewSrc(null);
+  };
 
   const { getRootProps: getVideoRootProps, getInputProps: getVideoInputProps } =
     useDropzone({
@@ -28,8 +37,19 @@ const DropSection = ({ title }: Props) => {
         className="border-2 border-dashed rounded-[10px] h-96 border-gray-300 p-20 text-center flex flex-col items-center justify-center my-2"
       >
         <input {...getVideoInputProps()} />
-        {introVideo ? (
-          <p>{introVideo.name}</p>
+        {previewSrc ? (
+          <div className="flex flex-col items-center">
+            <video
+              className="mb-2"
+              width="100%"
+              height="auto"
+              controls
+              src={previewSrc}
+            />
+            <Button variant="topicAction" onClick={removeVideo}>
+              <span className="font-bold">Remove Video</span>
+            </Button>
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center">
             <span className="font-bold text-white">

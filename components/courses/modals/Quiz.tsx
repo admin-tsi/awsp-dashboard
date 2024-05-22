@@ -14,16 +14,34 @@ import { Button } from "../../ui/button";
 import TextEditor from "@/components/courses/richtext-editor/TextEditor";
 import { Input } from "../../ui/input";
 import CreateQuiz from "@/components/courses/quiz-form/CreateQuiz";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Quizz } from "@/lib/types"; // Import your QuizData type from the appropriate location
 
 type Props = {
   action: string;
+  quizData?: Quizz;
 };
 
-const Quiz = ({ action }: Props) => {
+const Quiz = ({ action, quizData }: Props) => {
   const [showQuizInstructions, setShowQuizInstructions] = useState(true);
+  const [quizName, setQuizName] = useState<string>(quizData?.name || "");
+  const [quizInstructions, setQuizInstructions] = useState<string>(
+    quizData?.instructions || "",
+  );
+  const [isEnabled, setIsEnabled] = useState<boolean>(
+    quizData?.isEnabled || false,
+  );
+  const [duration, setDuration] = useState<string>(quizData?.duration || "");
+  const [champScore, setChampScore] = useState<number>(
+    quizData?.champScore || 0,
+  );
 
   const handleContinueClick = () => {
     setShowQuizInstructions(!showQuizInstructions);
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsEnabled(e.target.checked);
   };
 
   return (
@@ -45,7 +63,7 @@ const Quiz = ({ action }: Props) => {
           <span>{action}</span>
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="overflow-y-scroll">
         <AlertDialogHeader>
           <AlertDialogTitle className="border-b pb-3 text-left">
             {action}
@@ -59,17 +77,63 @@ const Quiz = ({ action }: Props) => {
                   </span>
                   <Input
                     type="text"
-                    id="TopciName"
-                    placeholder="Kinesiology"
+                    id="QuizName"
+                    value={quizName}
+                    onChange={(e) => setQuizName(e.target.value)}
+                    placeholder="Quiz Name"
                     className="rounded-[10px] text-white"
                   />
                 </div>
+                <div className="flex flex-col w-full space-y-2 mt-5">
+                  <span className="text-white font-bold text-left">
+                    Duration
+                  </span>
+                  <Input
+                    type="text"
+                    id="QuizDuration"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                    placeholder="Duration (e.g., 30 minutes)"
+                    className="rounded-[10px] text-white"
+                  />
+                </div>
+                <div className="flex flex-col w-full space-y-2 mt-5">
+                  <span className="text-white font-bold text-left">
+                    Champion Score
+                  </span>
+                  <Input
+                    type="number"
+                    id="ChampScore"
+                    value={champScore}
+                    onChange={(e) => setChampScore(Number(e.target.value))}
+                    placeholder="Champion Score"
+                    className="rounded-[10px] text-white"
+                  />
+                </div>
+                <div className="flex items-center space-x-2 mt-5">
+                  <Checkbox
+                    id="isEnabled"
+                    checked={isEnabled}
+                    /*
+                    onChange={handleCheckboxChange}
+*/
+                  />
+                  <label htmlFor="isEnabled" className="text-white">
+                    Enabled
+                  </label>
+                </div>
                 <div className="mb-28">
-                  <TextEditor title="Quiz instructions" />
+                  <TextEditor
+                    title="Quiz instructions"
+                    initialValue={quizInstructions}
+                    /*
+                    onChange={(newContent) => setQuizInstructions(newContent)}
+*/
+                  />
                 </div>
               </>
             ) : (
-              <CreateQuiz />
+              <CreateQuiz questionsData={quizData?.questions || []} />
             )}
             <div className="flex justify-end items-center space-x-2">
               {showQuizInstructions ? (

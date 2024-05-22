@@ -5,11 +5,14 @@ import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
 import Underline from "@tiptap/extension-underline";
+import { useEffect } from "react";
 
-const Tiptap = ({ onChange, content }: any) => {
-  const handleChange = (newContent: string) => {
-    onChange(newContent);
-  };
+type TiptapProps = {
+  onChange: (content: string) => void;
+  content: string;
+};
+
+const Tiptap = ({ onChange, content }: TiptapProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -18,6 +21,7 @@ const Tiptap = ({ onChange, content }: any) => {
         placeholder: "Write something …",
       }),
     ],
+    content,
     editorProps: {
       attributes: {
         class:
@@ -25,9 +29,16 @@ const Tiptap = ({ onChange, content }: any) => {
       },
     },
     onUpdate: ({ editor }) => {
-      handleChange(editor.getHTML());
+      onChange(editor.getHTML());
     },
   });
+
+  // Update editor content when `content` prop changes
+  useEffect(() => {
+    if (editor && editor.getHTML() !== content) {
+      editor.commands.setContent(content, false);
+    }
+  }, [content, editor]);
 
   return (
     <div className="w-full">

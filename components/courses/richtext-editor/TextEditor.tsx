@@ -6,10 +6,11 @@ import { v4 as uuidv4 } from "uuid";
 
 type Props = {
   title: string;
+  initialValue?: string;
 };
 
-const TextEditor = ({ title }: Props) => {
-  const [content, setContent] = useState<string>("");
+const TextEditor = ({ title, initialValue }: Props) => {
+  const [content, setContent] = useState<string>(initialValue || "");
   const handleContentChange = (reason: any) => {
     setContent(reason);
   };
