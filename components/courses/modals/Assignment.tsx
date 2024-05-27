@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../../ui/button";
-import TextEditor from "@/components/courses/richtext-editor/TextEditor";
+import TextEditor from "@/components/courses/steps/step3/richtext-editor/TextEditor";
 import { Input } from "../../ui/input";
 
 type Props = {
@@ -56,7 +56,9 @@ const Assignment = ({ action }: Props) => {
               />
             </div>
             <div className="mb-28">
+              {/*
               <TextEditor title="Summary" />
+*/}
             </div>
             <div className="flex flex-col w-full space-y-2 mt-5">
               <span className="text-white font-bold">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,10 +10,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import TextEditor from "@/components/courses/richtext-editor/TextEditor";
+import TextEditor from "@/components/courses/steps/step3/richtext-editor/TextEditor";
 import { Button } from "../../../../ui/button";
 import { Input } from "../../../../ui/input";
 import DropSection from "@/components/courses/add-topics/DropSection";
+import { Plus, X } from "lucide-react";
+import { updateCourseById } from "@/lib/api";
 
 type CourseData = {
   title: string;
@@ -24,54 +26,75 @@ type CourseData = {
 type Props = {
   action: string;
   courseData?: CourseData;
+  moduleId: string; // Add moduleId prop
+  token: string | undefined; // Add token prop
 };
 
-const CourseModal = ({ action, courseData }: Props) => {
+const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
+  const [title, setTitle] = useState(courseData?.title || "");
+  const [description, setDescription] = useState(courseData?.description || "");
+  const [video, setVideo] = useState(courseData?.video || "");
+
+  const handleSave = async () => {
+    const data = {
+      title,
+      description,
+      video,
+    };
+
+    try {
+      await updateCourseById(moduleId, data, token);
+      console.log("Module updated successfully");
+      // Add any success handling logic here, e.g., close the modal
+    } catch (error) {
+      console.error("Error updating module:", error);
+      // Add any error handling logic here
+    }
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger>
         <Button variant="topicAction">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={15}
-            height={16}
-            fill="none"
-          >
-            <rect width={15} height={15} y={0.248} fill="#F2DD66" rx={5} />
-            <path
-              fill="#1B1F20"
-              d="M10.56 8.472H8.472v2.136H6.528V8.472H4.44V6.636h2.088V4.488h1.944v2.148h2.088v1.836Z"
-            />
-          </svg>
+          <Plus />
           <span>{action}</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="overflow-y-scroll">
         <AlertDialogHeader>
-          <AlertDialogTitle className="border-b pb-3">
+          <AlertDialogTitle className="border-b pb-3 flex justify-between">
             {action}
+            <AlertDialogCancel className="">
+              <X />
+            </AlertDialogCancel>
           </AlertDialogTitle>
           <AlertDialogDescription className="flex flex-col space-y-5 w-full">
             <div className="flex flex-col w-full space-y-2 mt-5">
               <span className="text-white font-bold text-left">
-                Name of the lesson
+                Name of the course
               </span>
               <Input
                 type="text"
                 id="CourseName"
-                defaultValue={courseData?.title}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter course title"
                 className="rounded-[10px] text-white"
               />
             </div>
             <TextEditor
               title="Course Description"
-              initialValue={courseData?.description}
+              initialValue={description}
+              onChange={setDescription}
             />
-            <DropSection title="Course Video" videoSrc={courseData?.video} />
+            <DropSection
+              title="Course Video"
+              videoSrc={video}
+              onChange={setVideo}
+            />
             <div className="flex flex-col w-full space-y-2 mt-5">
               <span className="text-white font-bold">
-                Upload attachments files to the lesson
+                Upload attachments files to the course
               </span>
               <Input
                 type="file"
@@ -85,8 +108,11 @@ const CourseModal = ({ action, courseData }: Props) => {
           <AlertDialogCancel className="rounded-[10px]">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction className="rounded-[10px] text-black">
-            Continue
+          <AlertDialogAction
+            className="rounded-[10px] text-black"
+            onClick={handleSave}
+          >
+            Save
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

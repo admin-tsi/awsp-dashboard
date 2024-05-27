@@ -256,3 +256,53 @@ export async function deleteModule(
     }
   }
 }
+
+export async function updateCourseById(
+  id: string,
+  data: any,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.patch(`${baseUrl}/courses/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while updating module by ID",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function updateQuizById(
+  id: string,
+  data: any,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.patch(`${baseUrl}/quizzes/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while updating quiz by ID",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}

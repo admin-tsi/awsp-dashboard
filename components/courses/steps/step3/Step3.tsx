@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import ModuleItem from "@/components/courses/steps/step3/ModuleItem";
 import { ModuleDetails } from "@/lib/types";
@@ -31,6 +31,7 @@ const Step3: React.FC<Step3Props> = ({
         newModuleData,
         token,
       );
+      console.log("New module created", newModule);
       toast({
         title: "Module Created",
         description: "A new module has been created successfully.",
@@ -52,12 +53,14 @@ const Step3: React.FC<Step3Props> = ({
           Create Module
         </Button>
       </div>
-      {modules.map((moduleDetails) => (
-        <ModuleItem
-          key={moduleDetails.module.id}
-          moduleDetails={moduleDetails}
-        />
-      ))}
+      {modules
+        .filter((moduleDetails) => moduleDetails.module.id)
+        .map((moduleDetails) => (
+          <ModuleItem
+            key={moduleDetails.module.id}
+            moduleDetails={moduleDetails}
+          />
+        ))}
       <div className="flex space-x-4 mt-4">
         <Button type="button" variant="outline" onClick={onPrevious}>
           Previous

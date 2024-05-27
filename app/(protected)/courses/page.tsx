@@ -2,7 +2,6 @@
 import PageTitle from "@/components/PageTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardFooter } from "@/components/ui/card";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FilePenLine } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -12,6 +11,7 @@ import { getAllMicrocredentials } from "@/lib/api";
 import { SkeletonCard } from "@/components/courses/SkeletonCard";
 import { useRouter } from "next/navigation";
 import { useMicrocredentialsStore } from "@/stores/courses/microcredential";
+import Image from "next/image";
 
 export default function Page() {
   const router = useRouter();

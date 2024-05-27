@@ -8,8 +8,9 @@ import {
 import TopicHeader from "../../add-topics/TopicHeader";
 import { ModuleDetails } from "@/lib/types";
 import Assignment from "@/components/courses/modals/Assignment";
-import Quiz from "@/components/courses/modals/Quiz";
 import CourseModal from "@/components/courses/steps/step3/courses/CourseModal";
+import { useCurrentToken } from "@/hooks/use-current-token";
+import QuizModal from "@/components/courses/steps/step3/quizzes/QuizModal";
 
 interface ModuleItemProps {
   moduleDetails: ModuleDetails;
@@ -19,6 +20,7 @@ const ModuleItem: React.FC<ModuleItemProps> = ({ moduleDetails }) => {
   const { module, cours, quizz } = moduleDetails;
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(module.title);
+  const token = useCurrentToken();
 
   return (
     <Accordion type="single" collapsible>
@@ -31,8 +33,22 @@ const ModuleItem: React.FC<ModuleItemProps> = ({ moduleDetails }) => {
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex space-x-2 pt-5 overflow-scroll">
-            <CourseModal action="Course" courseData={cours} />
-            <Quiz action="Quiz" quizData={quizz} />
+            {cours && (
+              <CourseModal
+                action="Course"
+                courseData={cours}
+                moduleId={cours._id}
+                token={token}
+              />
+            )}
+            {quizz && (
+              <QuizModal
+                action="Quiz"
+                quizData={quizz}
+                quizId={quizz._id}
+                token={token}
+              />
+            )}
             <Assignment action="Assignments" />
           </div>
         </AccordionContent>

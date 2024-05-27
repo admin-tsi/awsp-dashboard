@@ -1,4 +1,3 @@
-// components/courses/steps/step2/Step2.tsx
 "use client";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -33,6 +32,7 @@ const Step2: React.FC<Step2Props> = ({
 }) => {
   const token = useCurrentToken();
   const [isEditingThumbnail, setIsEditingThumbnail] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const onThumbnailDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -112,13 +112,14 @@ const Step2: React.FC<Step2Props> = ({
             className={`border-2 border-dashed border-gray-300 p-20 text-center my-2 ${isEditingThumbnail ? "cursor-pointer" : ""}`}
           >
             <input {...getThumbnailInputProps()} />
-            {thumbnail.previewUrl ? (
+            {thumbnail.previewUrl && !imageError ? (
               <div className="flex flex-col justify-center items-center">
                 <Image
                   src={thumbnail.previewUrl}
                   width={300}
                   height={300}
                   alt="Thumbnail preview"
+                  onError={() => setImageError(true)}
                   style={{ width: "50%", height: "auto" }}
                 />
                 <Button
@@ -130,6 +131,8 @@ const Step2: React.FC<Step2Props> = ({
                   Edit Thumbnail
                 </Button>
               </div>
+            ) : imageError ? (
+              <p>Failed to load image.</p>
             ) : (
               <p>
                 Drag &apos;n&apos; drop thumbnail here, or click to select files
