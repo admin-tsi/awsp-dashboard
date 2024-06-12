@@ -10,7 +10,7 @@ import { Button } from "../../ui/button";
 import AnswerProposalComponent from "./AnswerProposalComponent";
 import { Question } from "@/lib/types";
 import { updateQuizById } from "@/lib/api";
-import { Pencil, Save, Trash, Trash2 } from "lucide-react";
+import { Pencil, Save, Trash } from "lucide-react";
 
 type Props = {
   questionsData?: Question[];

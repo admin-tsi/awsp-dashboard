@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: 'awsp-world-backend-4etmg5366a-uc.a.run.app',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'awsp-world-backend-production.up.railway.app',
+        pathname: '/uploads/**',
+      },
     ],
   },
 };

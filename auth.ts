@@ -27,7 +27,7 @@ export const {
         try {
           const { email, password } = credentials;
           const response = await axios.post(
-            "https://awsp-world-backend-4etmg5366a-uc.a.run.app/api/v1/auth/login",
+            "https://awsp-world-backend-production.up.railway.app/api/v1/auth/login",
             {
               email,
               password,

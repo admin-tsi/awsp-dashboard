@@ -2,20 +2,16 @@
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import { updateMicrocredentialThumbnail } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface Step2Props {
   onPrevious: () => void;
   onContinue: () => void;
   thumbnail: any;
   setThumbnail: (thumbnail: any) => void;
-  previewUrl: string | null;
-  setPreviewUrl: (url: string | null) => void;
-  introVideo: File | null;
-  setIntroVideo: (file: File | null) => void;
   microcredentialId: string;
 }
 
@@ -24,10 +20,6 @@ const Step2: React.FC<Step2Props> = ({
   onContinue,
   thumbnail,
   setThumbnail,
-  previewUrl,
-  setPreviewUrl,
-  introVideo,
-  setIntroVideo,
   microcredentialId,
 }) => {
   const token = useCurrentToken();
@@ -45,27 +37,17 @@ const Step2: React.FC<Step2Props> = ({
             file: file,
             previewUrl: reader.result as string,
           });
-          toast({
-            title: "Step 2 Saved",
-            description: "Thumbnail has been saved.",
-          });
         };
 
         reader.readAsDataURL(file);
 
         updateMicrocredentialThumbnail(microcredentialId, file, token)
           .then(() => {
-            toast({
-              title: "Thumbnail Updated",
-              description:
-                "Microcredential thumbnail has been updated successfully.",
-            });
+            console.log("Thumbnail updated successfully", file);
+            toast.success("Thumbnail updated successfully");
           })
-          .catch((error) => {
-            toast({
-              title: "Error",
-              description: error.message,
-            });
+          .catch(() => {
+            toast.error("Failed to update thumbnail");
           });
       }
     },
@@ -80,26 +62,6 @@ const Step2: React.FC<Step2Props> = ({
     accept: { "image/*": [] },
     maxSize: 10 * 1024 * 1024,
     disabled: !isEditingThumbnail,
-  });
-
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      setIntroVideo(file);
-      setPreviewUrl(URL.createObjectURL(file));
-      toast({
-        title: "Step 2 Saved",
-        description: "Intro video has been saved.",
-      });
-    },
-    [setIntroVideo, setPreviewUrl],
-  );
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    noClick: !!previewUrl,
-    noKeyboard: !!previewUrl,
-    accept: { "video/*": [] },
   });
 
   return (
@@ -119,7 +81,6 @@ const Step2: React.FC<Step2Props> = ({
                   width={300}
                   height={300}
                   alt="Thumbnail preview"
-                  onError={() => setImageError(true)}
                   style={{ width: "50%", height: "auto" }}
                 />
                 <Button
@@ -142,29 +103,6 @@ const Step2: React.FC<Step2Props> = ({
           <h3 className="text-md text-muted-foreground">
             File Support: .jpg, .jpeg, .gif, or .png
           </h3>
-        </div>
-        <div>
-          <h2 className="text-md">Introduction Video</h2>
-          <div
-            {...getRootProps()}
-            className="text-xl bg-primary/10 border-2 border-dashed border-muted-foreground rounded-lg p-4 sm:p-6 md:p-10 text-center w-full h-[300px] flex flex-col justify-center items-center overflow-hidden"
-          >
-            <input {...getInputProps()} />
-            {previewUrl ? (
-              <>
-                <video
-                  src={previewUrl}
-                  className="max-h-full max-w-full rounded-lg shadow-md mb-4"
-                  controls
-                />
-              </>
-            ) : isDragActive ? (
-              <p>Drop the video here ...</p>
-            ) : (
-              <p>Drag & drop a video here, or click to select a video</p>
-            )}
-          </div>
-          <h3 className="text-md text-muted-foreground">File format: .mp4</h3>
         </div>
       </div>
       <div className="flex space-x-4">

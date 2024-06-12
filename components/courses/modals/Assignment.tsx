@@ -11,7 +11,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../../ui/button";
-import TextEditor from "@/components/courses/steps/step3/richtext-editor/TextEditor";
 import { Input } from "../../ui/input";
 
 type Props = {

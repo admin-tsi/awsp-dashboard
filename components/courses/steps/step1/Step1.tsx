@@ -13,11 +13,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormStore } from "@/stores/courses/steps/useFormStore";
-import { Textarea } from "@/components/ui/textarea";
 
 interface Step1Props {
   onContinue: () => void;
-  microcredentialId: string; // Add microcredentialId as a prop
+  microcredentialId: string;
 }
 
 const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
@@ -54,6 +53,20 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
         )}
       />
       <FormField
+        control={control}
+        name="price"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Price ($)</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormDescription>Price of the microcredential.</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      {/*      <FormField
         control={control}
         name="topic"
         render={({ field }) => (
@@ -100,7 +113,7 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
             <FormMessage />
           </FormItem>
         )}
-      />
+      />*/}
       <Button type="button" variant="outline" onClick={onContinue}>
         Continue
       </Button>

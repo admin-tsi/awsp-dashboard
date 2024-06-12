@@ -65,7 +65,7 @@ export default function Page() {
                         alt={mc.title}
                         width={300}
                         height={360}
-                        className="rounded-t-xl max-h-52"
+                        className="rounded-t-xl max-h-52 min-w-full object-cover"
                       />
                       <CardFooter className="flex justify-between p-4">
                         <div className="flex-col">

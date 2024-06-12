@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect, ChangeEvent } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,43 +15,78 @@ import {
 import TextEditor from "@/components/courses/steps/step3/richtext-editor/TextEditor";
 import { Button } from "../../../../ui/button";
 import { Input } from "../../../../ui/input";
-import DropSection from "@/components/courses/add-topics/DropSection";
-import { Plus, X } from "lucide-react";
-import { updateCourseById } from "@/lib/api";
-
-type CourseData = {
-  title: string;
-  description: string;
-  video: string;
-};
+import { Loader, Plus, X } from "lucide-react";
+import { updateCourseById, updateCourseFiles } from "@/lib/api";
+import { toast } from "sonner";
+import VideoUploadMux from "@/components/courses/steps/VideoUploadMux";
+import { Course } from "@/lib/types";
 
 type Props = {
   action: string;
-  courseData?: CourseData;
-  moduleId: string; // Add moduleId prop
-  token: string | undefined; // Add token prop
+  courseData?: Course;
+  moduleId: string;
+  token: string | undefined;
 };
 
 const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
   const [title, setTitle] = useState(courseData?.title || "");
   const [description, setDescription] = useState(courseData?.description || "");
-  const [video, setVideo] = useState(courseData?.video || "");
+  const [loading, setLoading] = useState(false);
+  const [coursesFiles, setCoursesFiles] = useState<File[]>([]);
+  const [existingFiles, setExistingFiles] = useState<string[]>(
+    courseData?.courses_files || [],
+  );
+
+  useEffect(() => {
+    setExistingFiles(courseData?.courses_files || []);
+  }, [courseData]);
 
   const handleSave = async () => {
     const data = {
       title,
       description,
-      video,
     };
 
+    setLoading(true);
     try {
       await updateCourseById(moduleId, data, token);
-      console.log("Module updated successfully");
-      // Add any success handling logic here, e.g., close the modal
+      if (coursesFiles.length > 0) {
+        await updateCourseFiles(moduleId, coursesFiles, token);
+      }
+      toast.success("Course has been updated successfully.");
+      setCoursesFiles([]); // Reset files after saving
     } catch (error) {
+      toast.error("There was an error updating the course.");
       console.error("Error updating module:", error);
-      // Add any error handling logic here
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+    const acceptedFiles = Array.from(files);
+    if (acceptedFiles.length + coursesFiles.length + existingFiles.length > 5) {
+      toast.error("You can only upload up to 5 files.");
+      return;
+    }
+    setCoursesFiles([...coursesFiles, ...acceptedFiles]);
+    console.log("Files after change:", [...coursesFiles, ...acceptedFiles]); // Log files after change
+  };
+
+  const handleFileRemove = (index: number) => {
+    const newFiles = [...coursesFiles];
+    newFiles.splice(index, 1);
+    setCoursesFiles(newFiles);
+    console.log("Files after removal:", newFiles); // Log files after removal
+  };
+
+  const handleExistingFileRemove = (file: string) => {
+    setExistingFiles(
+      existingFiles.filter((existingFile) => existingFile !== file),
+    );
+    console.log("Existing files after removal:", existingFiles); // Log existing files after removal
   };
 
   return (
@@ -87,20 +124,57 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
               initialValue={description}
               onChange={setDescription}
             />
-            <DropSection
-              title="Course Video"
-              videoSrc={video}
-              onChange={setVideo}
-            />
+            <div className="text-foreground">
+              <h2 className="text-md py-2">Introduction Video</h2>
+              <VideoUploadMux moduleId={moduleId} />
+            </div>
             <div className="flex flex-col w-full space-y-2 mt-5">
               <span className="text-white font-bold">
-                Upload attachments files to the course
+                Upload attachments files to the course (Max 5 files)
               </span>
               <Input
                 type="file"
-                id="CourseAttachments"
-                className="rounded-[10px] text-white"
+                multiple
+                onChange={handleFileChange}
+                accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                className="my-2"
               />
+              <div className="text-sm text-gray-500">
+                Total uploaded files:{" "}
+                {existingFiles.length + coursesFiles.length}/5
+              </div>
+              <div className="flex flex-col space-y-2">
+                {coursesFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="text-white">{file.name}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleFileRemove(index)}
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                ))}
+                {existingFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="text-white">{file}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleExistingFileRemove(file)}
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -109,10 +183,11 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className="rounded-[10px] text-black"
+            className="rounded-[10px] text-black flex items-center"
             onClick={handleSave}
+            disabled={loading}
           >
-            Save
+            {loading ? <Loader className="mr-2" /> : null} Save
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

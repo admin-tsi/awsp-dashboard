@@ -22,6 +22,7 @@ export interface Course {
   title: string;
   video: string;
   description: string;
+  courses_files: string[];
   __v: number;
 }
 

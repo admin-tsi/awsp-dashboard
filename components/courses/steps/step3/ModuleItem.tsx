@@ -18,7 +18,6 @@ interface ModuleItemProps {
 
 const ModuleItem: React.FC<ModuleItemProps> = ({ moduleDetails }) => {
   const { module, cours, quizz } = moduleDetails;
-  const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(module.title);
   const token = useCurrentToken();
 
