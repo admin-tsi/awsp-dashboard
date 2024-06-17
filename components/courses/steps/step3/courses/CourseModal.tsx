@@ -86,7 +86,7 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
     setExistingFiles(
       existingFiles.filter((existingFile) => existingFile !== file),
     );
-    console.log("Existing files after removal:", existingFiles); // Log existing files after removal
+    console.log("Existing files after removal:", existingFiles);
   };
 
   return (
@@ -139,8 +139,8 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
                 accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
                 className="my-2"
               />
-              <div className="text-sm text-gray-500">
-                Total uploaded files:{" "}
+              <div className="text-sm text-foreground font-bold">
+                Total uploaded files:
                 {existingFiles.length + coursesFiles.length}/5
               </div>
               <div className="flex flex-col space-y-2">
@@ -164,7 +164,9 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
                     key={index}
                     className="flex justify-between items-center"
                   >
-                    <span className="text-white">{file}</span>
+                    <li className="text-foreground underline text-ellipsis">
+                      <a href={file}>{file}</a>
+                    </li>
                     <Button
                       variant="ghost"
                       size="sm"

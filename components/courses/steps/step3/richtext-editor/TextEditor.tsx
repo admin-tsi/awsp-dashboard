@@ -6,7 +6,7 @@ import Tiptap from "./Tiptap";
 type Props = {
   title: string;
   initialValue?: string;
-  onChange: (content: string) => void; // Add onChange prop
+  onChange: (content: string) => void;
 };
 
 const TextEditor = ({ title, initialValue, onChange }: Props) => {

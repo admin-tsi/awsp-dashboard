@@ -24,7 +24,7 @@ export default function SideNavbar({}: Props) {
         links={[
           {
             title: "Dashboard",
-            href: "/dashboard",
+            href: "/",
             icon: LayoutDashboard,
             variant: "ghost",
           },

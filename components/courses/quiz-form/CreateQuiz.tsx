@@ -78,6 +78,7 @@ const CreateQuiz = ({ questionsData = [], quizId, token }: Props) => {
       i === index ? questionToSave : q,
     );
 
+    console.log("Saving question:", updatedQuestions);
     try {
       await updateQuizById(quizId, { questions: updatedQuestions }, token);
       console.log("Question updated successfully");
@@ -120,14 +121,14 @@ const CreateQuiz = ({ questionsData = [], quizId, token }: Props) => {
                       <Pencil />
                     </Button>
                   )}
-                  <Button
+                  {/*           <Button
                     className="ml-2"
                     onClick={() => handleRemoveQuestion(qi)}
                     variant="ghost"
                     size={"icon"}
                   >
                     <Trash />
-                  </Button>
+                  </Button>*/}
                 </div>
               </div>
             </AccordionTrigger>

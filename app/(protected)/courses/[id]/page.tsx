@@ -1,11 +1,11 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { z, ZodSchema } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getMicrocredentialById, updateMicrocredential } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
-import { toast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import Step1 from "@/components/courses/steps/step1/Step1";
 import Step2 from "@/components/courses/steps/step2/Step2";
@@ -13,6 +13,8 @@ import Step3 from "@/components/courses/steps/step3/Step3";
 import { ModuleDetails } from "@/lib/types";
 import { useFormStore } from "@/stores/courses/steps/useFormStore";
 import CustomBreadcrumb from "@/components/CustomBreadcumb";
+import CustomStepBreadcrumb from "@/components/courses/steps/CustomStepBreadcrumb";
+import { toast } from "sonner";
 
 const FormSchema = z.object({
   title: z.string(),
@@ -36,10 +38,8 @@ export default function Page({ params }: { params: { id: string } }) {
     previewUrl: null,
   });
   const [modules, setModules] = useState<ModuleDetails[]>([]);
-  const [introVideo, setIntroVideo] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const token = useCurrentToken();
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { formData, mergeFormData, clearFormData } = useFormStore((state) => ({
     formData: state.formData[params.id] || {},
     mergeFormData: state.mergeFormData,
@@ -75,25 +75,26 @@ export default function Page({ params }: { params: { id: string } }) {
     try {
       await updateMicrocredential(params.id, data, token);
       clearFormData(params.id);
-      toast({
-        title: "Form Submission",
-        description: "Microcredential has been updated successfully.",
-      });
+      toast.success("Microcredential has been updated successfully.");
     } catch (error) {
       console.error("Failed to update microcredential", error);
-      toast({
-        title: "Form Submission",
-        description: "An error occurred while updating the microcredential.",
-      });
+      toast.error("An error occurred while updating the microcredential.");
     }
   };
+
+  const steps = ["Step 1", "Step 2", "Step 3"];
 
   return (
     <main className="w-full">
       <CustomBreadcrumb />
       <div className="col-span-2 p-4">
-        <div className="text-2xl">
-          Microcredential Info <span className="font-bold">(Step {step})</span>
+        <div className="text-xl flex items-center gap-4">
+          Microcredential Info
+          <CustomStepBreadcrumb
+            steps={steps}
+            currentStep={step}
+            setStep={setStep}
+          />
         </div>
         <Separator className="my-4" />
         <FormProvider {...formMethods}>
@@ -110,16 +111,13 @@ export default function Page({ params }: { params: { id: string } }) {
                 onContinue={() => setStep(3)}
                 thumbnail={thumbnail}
                 setThumbnail={setThumbnail}
-                previewUrl={previewUrl}
-                setPreviewUrl={setPreviewUrl}
-                introVideo={introVideo}
-                setIntroVideo={setIntroVideo}
                 microcredentialId={params.id}
               />
             )}
             {step === 3 && (
               <Step3
                 modules={modules}
+                setModules={setModules}
                 onPrevious={() => setStep(2)}
                 onSubmit={handleSubmit(onSubmit)}
                 microcredentialId={params.id}

@@ -1,10 +1,9 @@
-// Example implementation of DropSection component
 import React from "react";
 
 type Props = {
   title: string;
   videoSrc?: string;
-  onChange: (videoSrc: string) => void; // Add onChange prop
+  onChange: (videoSrc: string) => void;
 };
 
 const DropSection = ({ title, videoSrc, onChange }: Props) => {
@@ -12,7 +11,7 @@ const DropSection = ({ title, videoSrc, onChange }: Props) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const videoUrl = URL.createObjectURL(file);
-      onChange(videoUrl); // Call onChange when video changes
+      onChange(videoUrl);
     }
   };
 

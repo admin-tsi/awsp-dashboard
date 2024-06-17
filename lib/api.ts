@@ -1,6 +1,5 @@
 import axios from "axios";
-import { Microcredential, User } from "@/lib/types";
-import { toast } from "@/components/ui/use-toast";
+import { Microcredential, ModuleDetails, User } from "@/lib/types";
 
 export async function getAllUsers(token: string | undefined): Promise<User[]> {
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
@@ -213,15 +212,21 @@ export async function createModule(
   id: string,
   data: any,
   token: string | undefined,
-): Promise<void> {
+): Promise<ModuleDetails> {
+  // Ensure the return type is ModuleDetails
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    await axios.post(`${baseUrl}/modules/microcredential/${id}`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    const response = await axios.post<ModuleDetails>( // Ensure the response type is ModuleDetails
+      `${baseUrl}/modules/microcredential/${id}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
+    return response.data; // Return the response data
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
@@ -356,6 +361,56 @@ export async function updateCourseFiles(
       throw new Error(
         error.response?.data.message ||
           "An error occurred while updating course files",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function createQuizInBigModule(
+  id: string,
+  data: any,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.post(`${baseUrl}/quizzes/module/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while creating quiz in module",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function createCourseInBigModule(
+  id: string,
+  data: any,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.post(`${baseUrl}/courses/module/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while creating course in module",
       );
     } else {
       throw new Error("A non-Axios error occurred");

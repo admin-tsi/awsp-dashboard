@@ -33,7 +33,6 @@ const Tiptap = ({ onChange, content }: TiptapProps) => {
     },
   });
 
-  // Update editor content when `content` prop changes
   useEffect(() => {
     if (editor && editor.getHTML() !== content) {
       editor.commands.setContent(content, false);

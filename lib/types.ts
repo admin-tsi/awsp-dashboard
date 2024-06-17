@@ -10,13 +10,6 @@ export interface User {
   clientData: any;
 }
 
-export interface Module {
-  id: string;
-  moduleNumber: number;
-  title: string;
-  liveDate: string[];
-}
-
 export interface Course {
   _id: string;
   title: string;
@@ -51,8 +44,15 @@ export interface Option {
   _id: string;
 }
 
+export interface Module {
+  id: string;
+  moduleNumber: number;
+  title: string;
+  liveDate: string[];
+}
+
 export interface ModuleDetails {
-  module: Module;
+  module?: Module;
   cours: Course;
   quizz: Quizz;
 }

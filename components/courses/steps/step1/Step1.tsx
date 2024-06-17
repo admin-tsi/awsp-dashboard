@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import {
   FormField,
   FormItem,
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormStore } from "@/stores/courses/steps/useFormStore";
+import { toast } from "sonner";
 
 interface Step1Props {
   onContinue: () => void;
@@ -27,10 +27,7 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
     const subscription = watch((value, { name }) => {
       if (name) {
         setFormData(microcredentialId, { [name]: value[name] });
-        toast({
-          title: "Step 1 Saved",
-          description: `${name} has been saved.`,
-        });
+        toast.success(`${name} has been saved.`);
       }
     });
     return () => subscription.unsubscribe();

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   Accordion,
@@ -7,19 +9,25 @@ import {
 } from "@/components/ui/accordion";
 import TopicHeader from "../../add-topics/TopicHeader";
 import { ModuleDetails } from "@/lib/types";
-import Assignment from "@/components/courses/modals/Assignment";
 import CourseModal from "@/components/courses/steps/step3/courses/CourseModal";
 import { useCurrentToken } from "@/hooks/use-current-token";
-import QuizModal from "@/components/courses/steps/step3/quizzes/QuizModal";
 
 interface ModuleItemProps {
   moduleDetails: ModuleDetails;
+  onDeleteModule: (moduleId: string) => void;
 }
 
-const ModuleItem: React.FC<ModuleItemProps> = ({ moduleDetails }) => {
+const ModuleItem: React.FC<ModuleItemProps> = ({
+  moduleDetails,
+  onDeleteModule,
+}) => {
   const { module, cours, quizz } = moduleDetails;
-  const [title, setTitle] = useState(module.title);
+  const [title, setTitle] = useState(module?.title || "");
   const token = useCurrentToken();
+
+  if (!module || !module.id) {
+    return null;
+  }
 
   return (
     <Accordion type="single" collapsible>
@@ -28,7 +36,11 @@ const ModuleItem: React.FC<ModuleItemProps> = ({ moduleDetails }) => {
         className="border-2 rounded-[10px] px-5 mt-5"
       >
         <AccordionTrigger className="hover:no-underline">
-          <TopicHeader title={title} moduleId={module.id} />
+          <TopicHeader
+            title={title}
+            moduleId={module.id}
+            onDeleteModule={onDeleteModule}
+          />
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex space-x-2 pt-5 overflow-scroll">
@@ -40,15 +52,15 @@ const ModuleItem: React.FC<ModuleItemProps> = ({ moduleDetails }) => {
                 token={token}
               />
             )}
-            {quizz && (
+            {/* {quizz && (
               <QuizModal
                 action="Quiz"
                 quizData={quizz}
                 quizId={quizz._id}
                 token={token}
               />
-            )}
-            <Assignment action="Assignments" />
+            )}*/}
+            {/*      <Assignment action="Assignments" />*/}
           </div>
         </AccordionContent>
       </AccordionItem>

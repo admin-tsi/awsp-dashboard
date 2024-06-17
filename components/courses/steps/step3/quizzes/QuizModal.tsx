@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Quizz } from "@/lib/types";
 import { Loader, Plus, X } from "lucide-react";
 import { updateQuizById } from "@/lib/api";
+import { toast } from "sonner";
 
 type Props = {
   action: string;
@@ -54,16 +55,15 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
       questions: quizData?.questions || [],
     };
 
-    setLoading(true); // Show loader
+    setLoading(true);
     try {
       await updateQuizById(quizId, data, token);
-      console.log("Quiz updated successfully");
-      // Add any success handling logic here, e.g., close the modal
+      toast.success("Quiz updated successfully");
     } catch (error) {
+      toast.error("An error occurred while updating the quiz.");
       console.error("Error updating quiz:", error);
-      // Add any error handling logic here
     }
-    setLoading(false); // Hide loader
+    setLoading(false);
   };
 
   const handleContinueClick = async () => {

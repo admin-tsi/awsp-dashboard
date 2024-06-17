@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { AlignJustify, Pencil, Trash } from "lucide-react";
 import { deleteModule, updateModule } from "@/lib/api";
@@ -15,13 +17,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 type Props = {
   title: string;
   moduleId: string;
+  onDeleteModule: (moduleId: string) => void;
 };
 
-function TopicHeader({ title: initialTitle, moduleId }: Props) {
+function TopicHeader({ title: initialTitle, moduleId, onDeleteModule }: Props) {
   const token = useCurrentToken();
   const [title, setTitle] = useState(initialTitle);
   const [isEditing, setIsEditing] = useState(false);
@@ -33,12 +37,8 @@ function TopicHeader({ title: initialTitle, moduleId }: Props) {
 
   const onSave = async () => {
     await updateModule(moduleId, { title }, token);
+    toast.success("Module updated successfully");
     setIsEditing(false);
-  };
-
-  const onDelete = async () => {
-    await deleteModule(moduleId, token);
-    setIsDialogOpen(false);
   };
 
   return (
@@ -90,7 +90,10 @@ function TopicHeader({ title: initialTitle, moduleId }: Props) {
               </AlertDialogCancel>
               <AlertDialogAction
                 className="bg-muted text-white hover:bg-red-500"
-                onClick={onDelete}
+                onClick={() => {
+                  onDeleteModule(moduleId);
+                  setIsDialogOpen(false);
+                }}
               >
                 Delete
               </AlertDialogAction>
