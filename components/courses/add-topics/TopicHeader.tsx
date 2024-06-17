@@ -1,23 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { AlignJustify, Pencil, Trash } from "lucide-react";
-import { deleteModule, updateModule } from "@/lib/api";
+import { AlignJustify, Pencil } from "lucide-react";
+import { updateModule } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import DeleteConfirmation from "@/components/DeleteConfirmation";
 
 type Props = {
   title: string;
@@ -29,7 +19,6 @@ function TopicHeader({ title: initialTitle, moduleId, onDeleteModule }: Props) {
   const token = useCurrentToken();
   const [title, setTitle] = useState(initialTitle);
   const [isEditing, setIsEditing] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const onEdit = () => {
     setIsEditing(true);
@@ -65,41 +54,10 @@ function TopicHeader({ title: initialTitle, moduleId, onDeleteModule }: Props) {
             <Pencil />
           </Button>
         )}
-        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <AlertDialogTrigger asChild>
-            <Button
-              aria-label="Delete"
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              <Trash />
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete this
-                module and remove the data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-muted text-white hover:bg-red-500"
-                onClick={() => {
-                  onDeleteModule(moduleId);
-                  setIsDialogOpen(false);
-                }}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <DeleteConfirmation
+          onDelete={() => onDeleteModule(moduleId)}
+          entityName="module"
+        />
       </div>
     </div>
   );

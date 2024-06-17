@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Loader } from "lucide-react";
 import CustomBreadcrumb from "@/components/CustomBreadcumb";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 type UserFormData = z.infer<typeof UserSchema>;
 
@@ -74,8 +74,7 @@ export default function Page({
         <CustomBreadcrumb />
         {isLoading && (
           <div className="w-full flex justify-center items-center">
-            <Loader className="animate-spin h-5 w-5 mr-3" />
-            Loading...
+            <LoadingSpinner text="Loading..." />
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -27,7 +27,7 @@ import * as z from "zod";
 import FormError from "@/components/login/FormError";
 import FormSuccess from "@/components/login/FormSuccess";
 import { login } from "@/actions/login";
-import { Loader } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 export default function Page() {
   const [error, setError] = React.useState<string | undefined>("");
   const [success, setSuccess] = React.useState<string | undefined>("");
@@ -131,8 +131,7 @@ export default function Page() {
               >
                 {isPending ? (
                   <>
-                    <Loader className="animate-spin h-5 w-5 mr-3" />
-                    Loading...
+                    <LoadingSpinner text="Loading..." />
                   </>
                 ) : (
                   "Login"

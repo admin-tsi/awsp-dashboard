@@ -15,9 +15,10 @@ import { Input } from "../../../../ui/input";
 import CreateQuiz from "@/components/courses/quiz-form/CreateQuiz";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Quizz } from "@/lib/types";
-import { Loader, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { updateQuizById } from "@/lib/api";
 import { toast } from "sonner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 type Props = {
   action: string;
@@ -94,8 +95,7 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
           <AlertDialogDescription className="flex flex-col space-y-5 w-full">
             {loading ? (
               <div className="w-full flex items-center justify-center">
-                <Loader className="animate-spin h-5 w-5 mr-3" />
-                Loading...
+                <LoadingSpinner text="Loading..." />
               </div>
             ) : (
               <>

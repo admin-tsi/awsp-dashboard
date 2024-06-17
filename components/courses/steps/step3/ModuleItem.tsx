@@ -11,6 +11,7 @@ import TopicHeader from "../../add-topics/TopicHeader";
 import { ModuleDetails } from "@/lib/types";
 import CourseModal from "@/components/courses/steps/step3/courses/CourseModal";
 import { useCurrentToken } from "@/hooks/use-current-token";
+import QuizModal from "@/components/courses/steps/step3/quizzes/QuizModal";
 
 interface ModuleItemProps {
   moduleDetails: ModuleDetails;
@@ -52,14 +53,14 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
                 token={token}
               />
             )}
-            {/* {quizz && (
+            {quizz && (
               <QuizModal
                 action="Quiz"
                 quizData={quizz}
                 quizId={quizz._id}
                 token={token}
               />
-            )}*/}
+            )}
             {/*      <Assignment action="Assignments" />*/}
           </div>
         </AccordionContent>

@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -11,8 +12,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useFormStore } from "@/stores/courses/steps/useFormStore";
 import { toast } from "sonner";
+import { updateMicrocredential } from "@/lib/api";
+import { useCurrentToken } from "@/hooks/use-current-token";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface Step1Props {
   onContinue: () => void;
@@ -20,18 +25,32 @@ interface Step1Props {
 }
 
 const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
-  const { control, watch } = useFormContext();
+  const { control, watch, handleSubmit } = useFormContext();
   const setFormData = useFormStore((state) => state.setFormData);
+  const token = useCurrentToken();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name) {
         setFormData(microcredentialId, { [name]: value[name] });
-        toast.success(`${name} has been saved.`);
       }
     });
     return () => subscription.unsubscribe();
   }, [watch, setFormData, microcredentialId]);
+
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    try {
+      await updateMicrocredential(microcredentialId, data, token);
+      setIsLoading(false);
+      toast.success("Microcredential has been updated successfully.");
+      onContinue();
+    } catch (error) {
+      console.error("Failed to update microcredential", error);
+      toast.error("An error occurred while updating the microcredential.");
+    }
+  };
 
   return (
     <>
@@ -63,7 +82,7 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
           </FormItem>
         )}
       />
-      {/*      <FormField
+      <FormField
         control={control}
         name="topic"
         render={({ field }) => (
@@ -110,9 +129,9 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
             <FormMessage />
           </FormItem>
         )}
-      />*/}
-      <Button type="button" variant="outline" onClick={onContinue}>
-        Continue
+      />
+      <Button type="button" variant="outline" onClick={handleSubmit(onSubmit)}>
+        {isLoading ? <LoadingSpinner text="Saving..." /> : "Continue"}
       </Button>
     </>
   );

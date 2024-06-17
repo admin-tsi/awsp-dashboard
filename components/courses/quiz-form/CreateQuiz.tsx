@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   Accordion,
@@ -9,8 +11,10 @@ import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import AnswerProposalComponent from "./AnswerProposalComponent";
 import { Question } from "@/lib/types";
-import { updateQuizById } from "@/lib/api";
-import { Pencil, Save, Trash } from "lucide-react";
+import { updateQuizById, deleteQuestionInQuiz } from "@/lib/api";
+import { Pencil, Save } from "lucide-react";
+import { toast } from "sonner";
+import DeleteConfirmation from "@/components/DeleteConfirmation";
 
 type Props = {
   questionsData?: Question[];
@@ -68,8 +72,16 @@ const CreateQuiz = ({ questionsData = [], quizId, token }: Props) => {
     ]);
   };
 
-  const handleRemoveQuestion = (index: number) => {
-    setQuestions(questions.filter((_, i) => i !== index));
+  const handleRemoveQuestion = async (index: number) => {
+    const questionToRemove = questions[index];
+    try {
+      await deleteQuestionInQuiz(quizId, questionToRemove._id, token);
+      setQuestions(questions.filter((_, i) => i !== index));
+      toast.success("Question deleted successfully");
+    } catch (error) {
+      toast.error("An error occurred while deleting the question.");
+      console.error("Error deleting question:", error);
+    }
   };
 
   const handleSaveQuestion = async (index: number) => {
@@ -81,8 +93,9 @@ const CreateQuiz = ({ questionsData = [], quizId, token }: Props) => {
     console.log("Saving question:", updatedQuestions);
     try {
       await updateQuizById(quizId, { questions: updatedQuestions }, token);
-      console.log("Question updated successfully");
+      toast.success("Question updated successfully");
     } catch (error) {
+      toast.error("An error occurred while updating the question.");
       console.error("Error updating question:", error);
     }
   };
@@ -121,14 +134,10 @@ const CreateQuiz = ({ questionsData = [], quizId, token }: Props) => {
                       <Pencil />
                     </Button>
                   )}
-                  {/*           <Button
-                    className="ml-2"
-                    onClick={() => handleRemoveQuestion(qi)}
-                    variant="ghost"
-                    size={"icon"}
-                  >
-                    <Trash />
-                  </Button>*/}
+                  <DeleteConfirmation
+                    onDelete={() => handleRemoveQuestion(qi)}
+                    entityName="question"
+                  />
                 </div>
               </div>
             </AccordionTrigger>

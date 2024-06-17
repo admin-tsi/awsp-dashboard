@@ -5,10 +5,11 @@ import MuxPlayer from "@mux/mux-player-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader, Terminal } from "lucide-react";
+import { Terminal } from "lucide-react";
 import { toast } from "sonner";
 import { getCourseById, updateCourseById } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface VideoAssetProps {
   initialUrl?: string;
@@ -146,8 +147,8 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
     <div className="flex flex-col items-center w-full">
       {checkingVideo ? (
         <div className="flex flex-col items-center justify-center w-full h-full">
-          <Loader className="animate-spin h-10 w-10" />
-          <p className="mt-2 text-gray-600">Checking video existence...</p>
+          <LoadingSpinner />
+          <p className="mt-2 text-gray-600"></p>
         </div>
       ) : (
         <>
@@ -197,8 +198,7 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
               >
                 {loading ? (
                   <>
-                    <Loader className="animate-spin h-5 w-5 mr-3" />
-                    Uploading...
+                    <LoadingSpinner text="Uploading..." />
                   </>
                 ) : (
                   "Upload Video"

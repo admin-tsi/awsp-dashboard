@@ -138,7 +138,7 @@ export async function updateMicrocredential(
 ): Promise<void> {
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    await axios.put(`${baseUrl}/microcredentials/${id}`, data, {
+    await axios.patch(`${baseUrl}/microcredentials/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -368,6 +368,57 @@ export async function updateCourseFiles(
   }
 }
 
+export async function deleteQuestionInQuiz(
+  quizId: string,
+  questionId: string,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.delete(`${baseUrl}/quizzes/${quizId}/questions/${questionId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while deleting question",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function deleteFileInCourse(
+  courseId: string,
+  fileId: string,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.delete(`${baseUrl}/courses/courses_files/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: { fileId },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message || "An error occurred while deleting file",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+/*
 export async function createQuizInBigModule(
   id: string,
   data: any,
@@ -417,3 +468,4 @@ export async function createCourseInBigModule(
     }
   }
 }
+*/

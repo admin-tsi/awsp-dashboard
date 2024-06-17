@@ -15,11 +15,16 @@ import {
 import TextEditor from "@/components/courses/steps/step3/richtext-editor/TextEditor";
 import { Button } from "../../../../ui/button";
 import { Input } from "../../../../ui/input";
-import { Loader, Plus, X } from "lucide-react";
-import { updateCourseById, updateCourseFiles } from "@/lib/api";
+import { Plus, X } from "lucide-react";
+import {
+  updateCourseById,
+  updateCourseFiles,
+  deleteFileInCourse,
+} from "@/lib/api";
 import { toast } from "sonner";
 import VideoUploadMux from "@/components/courses/steps/VideoUploadMux";
 import { Course } from "@/lib/types";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 type Props = {
   action: string;
@@ -82,11 +87,20 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
     console.log("Files after removal:", newFiles); // Log files after removal
   };
 
-  const handleExistingFileRemove = (file: string) => {
-    setExistingFiles(
-      existingFiles.filter((existingFile) => existingFile !== file),
-    );
-    console.log("Existing files after removal:", existingFiles);
+  const handleExistingFileRemove = async (file: string) => {
+    setLoading(true);
+    try {
+      await deleteFileInCourse(moduleId, file, token);
+      setExistingFiles(
+        existingFiles.filter((existingFile) => existingFile !== file),
+      );
+      toast.success("File has been deleted successfully.");
+    } catch (error) {
+      toast.error("There was an error deleting the file.");
+      console.error("Error deleting file:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -189,7 +203,7 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
             onClick={handleSave}
             disabled={loading}
           >
-            {loading ? <Loader className="mr-2" /> : null} Save
+            {loading ? <LoadingSpinner text="Loading..." /> : null} Save
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

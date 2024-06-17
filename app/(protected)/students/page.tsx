@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown, Loader } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +37,7 @@ import { deleteUser, getAllUsers } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Page() {
   const [users, setUsers] = useState<any>([]);
@@ -181,8 +182,7 @@ export default function Page() {
                 >
                   {loading ? (
                     <div className="w-full flex justify-center items-center">
-                      <Loader className="animate-spin h-5 w-5 mr-3" />
-                      Loading...
+                      <LoadingSpinner text="Loading..." />
                     </div>
                   ) : (
                     "No results found."
