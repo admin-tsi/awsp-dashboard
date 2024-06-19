@@ -132,7 +132,7 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
                   <Input {...field} />
                 </FormControl>
                 <FormDescription>
-                  Estimated completion time (e.g., "4 weeks").
+                  Estimated completion time (e.g., `&quot;`4 weeks`&quot;`).
                 </FormDescription>
                 <FormMessage />
               </FormItem>
