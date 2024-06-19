@@ -31,17 +31,18 @@ export interface Quizz {
 }
 
 export interface Question {
+  _id: string;
   question: string;
   options: Option[];
+  answer: number[];
   isEnabled: boolean;
   explanation: string;
   questionScore: number;
-  _id: string;
 }
 
 export interface Option {
-  option: string;
   _id: string;
+  option: string;
 }
 
 export interface Module {
@@ -62,6 +63,9 @@ export interface Microcredential {
   title: string;
   thumbnail: string;
   price: number;
+  topic: string;
+  description: string;
+  duration: string;
   notify_students: boolean;
   modules: ModuleDetails[];
   __v: number;

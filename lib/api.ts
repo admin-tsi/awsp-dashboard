@@ -1,5 +1,11 @@
 import axios from "axios";
-import { Microcredential, ModuleDetails, User } from "@/lib/types";
+import {
+  Course,
+  Microcredential,
+  ModuleDetails,
+  Quizz,
+  User,
+} from "@/lib/types";
 
 export async function getAllUsers(token: string | undefined): Promise<User[]> {
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
@@ -209,15 +215,14 @@ export async function updateModule(
 }
 
 export async function createModule(
-  id: string,
+  microcredentialId: string,
   data: any,
   token: string | undefined,
 ): Promise<ModuleDetails> {
-  // Ensure the return type is ModuleDetails
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    const response = await axios.post<ModuleDetails>( // Ensure the response type is ModuleDetails
-      `${baseUrl}/modules/microcredential/${id}`,
+    const response = await axios.post<ModuleDetails>(
+      `${baseUrl}/modules/microcredential/${microcredentialId}`,
       data,
       {
         headers: {
@@ -226,12 +231,12 @@ export async function createModule(
         },
       },
     );
-    return response.data; // Return the response data
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         error.response?.data.message ||
-          "An error occurred while creating modules",
+          "An error occurred while creating the module",
       );
     } else {
       throw new Error("A non-Axios error occurred");
@@ -395,17 +400,17 @@ export async function deleteQuestionInQuiz(
 
 export async function deleteFileInCourse(
   courseId: string,
-  fileId: string,
+  file: string,
   token: string | undefined,
 ): Promise<void> {
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    await axios.delete(`${baseUrl}/courses/courses_files/${courseId}`, {
+    await axios.delete(`${baseUrl}/courses/${courseId}/file`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      data: { fileId },
+      data: { file },
     });
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -418,20 +423,54 @@ export async function deleteFileInCourse(
   }
 }
 
-/*
-export async function createQuizInBigModule(
+export async function createCourseInModule(
   id: string,
-  data: any,
+  data: Partial<Course>,
   token: string | undefined,
-): Promise<void> {
+): Promise<Course> {
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    await axios.post(`${baseUrl}/quizzes/module/${id}`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    const response = await axios.post<Course>(
+      `${baseUrl}/courses/module/${id}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while creating course in module",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function createQuizInModule(
+  id: string,
+  data: Partial<Quizz>,
+  token: string | undefined,
+): Promise<Quizz> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    const response = await axios.post<Quizz>(
+      `${baseUrl}/quizzes/module/${id}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
@@ -444,14 +483,38 @@ export async function createQuizInBigModule(
   }
 }
 
-export async function createCourseInBigModule(
+export async function getQuizByAdmin(
   id: string,
+  token: string | undefined,
+): Promise<Quizz> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    const response = await axios.get<Quizz>(`${baseUrl}/quizzes/${id}/admin`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message || "An error occurred while fetching quiz",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function addQuestionInQuiz(
+  quizId: string,
   data: any,
   token: string | undefined,
 ): Promise<void> {
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    await axios.post(`${baseUrl}/courses/module/${id}`, data, {
+    await axios.post(`${baseUrl}/quizzes/${quizId}/questions`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -461,11 +524,65 @@ export async function createCourseInBigModule(
     if (axios.isAxiosError(error)) {
       throw new Error(
         error.response?.data.message ||
-          "An error occurred while creating course in module",
+          "An error occurred while adding question",
       );
     } else {
       throw new Error("A non-Axios error occurred");
     }
   }
 }
-*/
+
+export async function updateQuestionAnswer(
+  quizId: string,
+  questionId: string,
+  data: any,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.patch(
+      `${baseUrl}/quizzes/${quizId}/questions/${questionId}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while updating question answer",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function deleteQuestionInQuizz(
+  quizId: string,
+  questionId: string,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.delete(`${baseUrl}/quizzes/${quizId}/questions/${questionId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while deleting question in quiz",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}

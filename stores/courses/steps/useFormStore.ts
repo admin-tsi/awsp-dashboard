@@ -39,8 +39,7 @@ export const useFormStore = create<FormState>()(
           (acc, id) => {
             acc[id] = {
               ...state.formData[id],
-              thumbnail: undefined, // Do not persist the large thumbnail data
-              introVideo: undefined, // Do not persist the large introVideo data
+              thumbnail: undefined,
             };
             return acc;
           },

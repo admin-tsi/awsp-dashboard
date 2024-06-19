@@ -159,11 +159,7 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
                     </div>
                   </>
                 ) : (
-                  <CreateQuiz
-                    questionsData={quizData?.questions || []}
-                    quizId={quizId}
-                    token={token}
-                  />
+                  <CreateQuiz quizId={quizId} />
                 )}
                 <div className="flex justify-end items-center space-x-2">
                   {showQuizInstructions ? (

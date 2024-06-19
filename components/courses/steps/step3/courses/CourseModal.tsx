@@ -57,9 +57,13 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
       await updateCourseById(moduleId, data, token);
       if (coursesFiles.length > 0) {
         await updateCourseFiles(moduleId, coursesFiles, token);
+        setExistingFiles((prev) => [
+          ...prev,
+          ...coursesFiles.map((file) => URL.createObjectURL(file)),
+        ]); // Assuming URL.createObjectURL or backend returns URLs
+        setCoursesFiles([]); // Reset files after saving
       }
       toast.success("Course has been updated successfully.");
-      setCoursesFiles([]); // Reset files after saving
     } catch (error) {
       toast.error("There was an error updating the course.");
       console.error("Error updating module:", error);
@@ -203,7 +207,7 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
             onClick={handleSave}
             disabled={loading}
           >
-            {loading ? <LoadingSpinner text="Loading..." /> : null} Save
+            {loading ? <LoadingSpinner text="Loading..." /> : "Save"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -41,7 +41,9 @@ export default function Page() {
           <TabsTrigger value="published">
             Published ({microcredentials.length})
           </TabsTrigger>
+          {/*
           <TabsTrigger value="draft">Draft (0)</TabsTrigger>
+*/}
         </TabsList>
         <Separator />
         <TabsContent value="published">

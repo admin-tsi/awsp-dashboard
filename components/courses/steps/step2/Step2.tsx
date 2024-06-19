@@ -6,6 +6,7 @@ import { updateMicrocredentialThumbnail } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
 import Image from "next/image";
 import { toast } from "sonner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface Step2Props {
   onPrevious: () => void;
@@ -25,6 +26,7 @@ const Step2: React.FC<Step2Props> = ({
   const token = useCurrentToken();
   const [isEditingThumbnail, setIsEditingThumbnail] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onThumbnailDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -41,13 +43,16 @@ const Step2: React.FC<Step2Props> = ({
 
         reader.readAsDataURL(file);
 
+        setIsLoading(true);
         updateMicrocredentialThumbnail(microcredentialId, file, token)
           .then(() => {
             console.log("Thumbnail updated successfully", file);
             toast.success("Thumbnail updated successfully");
+            setIsLoading(false);
           })
           .catch(() => {
             toast.error("Failed to update thumbnail");
+            setIsLoading(false);
           });
       }
     },
@@ -61,7 +66,7 @@ const Step2: React.FC<Step2Props> = ({
     onDrop: onThumbnailDrop,
     accept: { "image/*": [] },
     maxSize: 10 * 1024 * 1024,
-    disabled: !isEditingThumbnail,
+    disabled: !isEditingThumbnail || isLoading,
   });
 
   return (
@@ -74,7 +79,9 @@ const Step2: React.FC<Step2Props> = ({
             className={`border-2 border-dashed border-gray-300 p-20 text-center my-2 ${isEditingThumbnail ? "cursor-pointer" : ""}`}
           >
             <input {...getThumbnailInputProps()} />
-            {thumbnail.previewUrl && !imageError ? (
+            {isLoading ? (
+              <LoadingSpinner text="Uploading..." />
+            ) : thumbnail.previewUrl && !imageError ? (
               <div className="flex flex-col justify-center items-center">
                 <Image
                   src={thumbnail.previewUrl}
