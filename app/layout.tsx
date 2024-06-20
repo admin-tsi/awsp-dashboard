@@ -23,7 +23,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang="en">
-        <body className={cn(raleway.className, "dark")}>
+        <body className={cn(raleway.className)}>
           <div className="flex flex-col h-screen">
             <Header />
             <div className="flex flex-1 overflow-hidden">

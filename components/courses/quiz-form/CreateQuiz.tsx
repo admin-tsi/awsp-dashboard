@@ -16,7 +16,7 @@ import {
   addQuestionInQuiz,
   updateQuestionAnswer,
 } from "@/lib/api";
-import { Pencil, Save } from "lucide-react";
+import { Pencil, Save, X } from "lucide-react";
 import { toast } from "sonner";
 import DeleteConfirmation from "@/components/DeleteConfirmation";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -219,11 +219,11 @@ const CreateQuiz = ({ quizId }: Props) => {
               </div>
               <div className="space-y-2">
                 <label className="text-white font-bold">Correct Options</label>
-                <div className="flex flex-col space-y-2">
+                <div className="grid grid-cols-2 gap-4">
                   {q.options.map((option, oi) => (
                     <div
                       key={option._id}
-                      className="flex items-center space-x-2"
+                      className="flex items-center space-x-2 relative"
                     >
                       <Input
                         type="text"
@@ -235,10 +235,13 @@ const CreateQuiz = ({ quizId }: Props) => {
                         readOnly={editIndex !== qi}
                         className={`text-center border rounded py-2 px-4 w-full ${
                           q.answer.includes(oi)
-                            ? "bg-green-500 text-white"
+                            ? "border-primary border-2 text-white"
                             : "text-white"
                         }`}
                       />
+                      {editIndex === qi && (
+                        <X className="text-secondary absolute -top-3 -right-2 " />
+                      )}
                     </div>
                   ))}
                 </div>
