@@ -143,8 +143,8 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
               onChange={setDescription}
             />
             <div className="text-foreground">
-              <h2 className="text-md py-2">
-                Introduction Video (MP4, MOV, MKV)
+              <h2 className="text-md py-2 font-bold">
+                Introduction Video (mp4, mov, mkv)
               </h2>
               <VideoUploadMux moduleId={moduleId} />
             </div>
@@ -157,7 +157,7 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
                 multiple
                 onChange={handleFileChange}
                 accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
-                className="my-2"
+                className="my-2 bg-white"
               />
               <div className="text-sm text-foreground font-bold">
                 Total uploaded files:
