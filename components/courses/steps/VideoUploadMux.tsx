@@ -154,15 +154,18 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
         <>
           {!showUploadForm && playbackId ? (
             <div className="mt-4 w-full">
-              <MuxPlayer
-                playbackId={playbackId}
-                metadata={{
-                  video_id: "video-id-54321",
-                  video_title: "Test video title",
-                  viewer_user_id: "user-id-007",
-                }}
-                className="w-full"
-              />
+              <div className="">
+                <MuxPlayer
+                  playbackId={playbackId}
+                  metadata={{
+                    video_id: "video-id-54321",
+                    video_title: "Test video title",
+                    viewer_user_id: "user-id-007",
+                  }}
+                  className="w-full aspect-video"
+                />
+              </div>
+
               <Button
                 onClick={handleUploadNewVideo}
                 className="mt-4"

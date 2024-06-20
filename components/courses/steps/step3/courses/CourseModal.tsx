@@ -143,7 +143,9 @@ const CourseModal = ({ action, courseData, moduleId, token }: Props) => {
               onChange={setDescription}
             />
             <div className="text-foreground">
-              <h2 className="text-md py-2">Introduction Video</h2>
+              <h2 className="text-md py-2">
+                Introduction Video (MP4, MOV, MKV)
+              </h2>
               <VideoUploadMux moduleId={moduleId} />
             </div>
             <div className="flex flex-col w-full space-y-2 mt-5">

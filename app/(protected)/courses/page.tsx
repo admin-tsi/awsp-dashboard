@@ -1,5 +1,4 @@
 "use client";
-import PageTitle from "@/components/PageTitle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,7 @@ export default function Page() {
 
   return (
     <main className="flex flex-col gap-5 w-full">
-      <PageTitle title="Courses" />
+      <h1 className="text-2xl font-semibold">Courses</h1>
       <Tabs defaultValue="published" className="w-full">
         <TabsList className="w-full rounded-none justify-start">
           <TabsTrigger value="published">
@@ -67,7 +66,7 @@ export default function Page() {
                         alt={mc.title}
                         width={300}
                         height={360}
-                        className="rounded-t-xl max-h-52 min-w-full object-cover"
+                        className="rounded-t-xl max-h-52 min-w-full object-cover aspect-square"
                       />
                       <CardFooter className="flex justify-between p-4">
                         <div className="flex-col">
