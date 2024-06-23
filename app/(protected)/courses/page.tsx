@@ -32,6 +32,18 @@ export default function Page() {
       .finally(() => setIsLoading(false));
   }, [token, setMicrocredentials]);
 
+  console.log(microcredentials);
+  if (microcredentials.length === 0) {
+    return (
+      <main className="flex flex-col gap-5 w-full">
+        <h1 className="text-2xl font-semibold">Courses</h1>
+        <div className="flex flex-col items-center justify-center h-96">
+          <h1 className="text-md font-medium">No courses found.</h1>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="flex flex-col gap-5 w-full">
       <h1 className="text-2xl font-semibold">Courses</h1>
