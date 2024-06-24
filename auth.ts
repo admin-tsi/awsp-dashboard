@@ -15,6 +15,7 @@ export type MyUserType = {
   __v: number;
 };
 
+const api = process.env.NEXT_PUBLIC_BASE_URL;
 export const {
   handlers: { POST, GET },
   auth,
@@ -25,13 +26,10 @@ export const {
       authorize: async (credentials) => {
         try {
           const { email, password } = credentials;
-          const response = await axios.post(
-            "https://awsp-world-backend-production.up.railway.app/api/v1/auth/login",
-            {
-              email,
-              password,
-            },
-          );
+          const response = await axios.post(`${api}/auth/login`, {
+            email,
+            password,
+          });
 
           const { user, token, expiresIn } = response.data;
           console.log("expirin", response.data);

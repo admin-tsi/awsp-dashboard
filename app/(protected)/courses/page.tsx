@@ -33,7 +33,7 @@ export default function Page() {
   }, [token, setMicrocredentials]);
 
   console.log(microcredentials);
-  if (microcredentials.length === 0) {
+  if (microcredentials.length === 0 && !isLoading) {
     return (
       <main className="flex flex-col gap-5 w-full">
         <h1 className="text-2xl font-semibold">Courses</h1>
