@@ -37,9 +37,9 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
     quizData?.isEnabled || false,
   );
   const [duration, setDuration] = useState<string>(quizData?.duration || "");
-  const [champScore, setChampScore] = useState<number>(
+  /*  const [champScore, setChampScore] = useState<number>(
     quizData?.champScore || 0,
-  );
+  );*/
   const [loading, setLoading] = useState<boolean>(false); // Add loading state
 
   const handleCheckboxChange = (checked: boolean) => {
@@ -52,7 +52,7 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
       instructions: quizInstructions,
       isEnabled,
       duration,
-      champScore,
+      champScore: 100,
       questions: quizData?.questions || [],
     };
 
@@ -116,7 +116,7 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
                     </div>
                     <div className="flex flex-col w-full space-y-2 mt-5">
                       <span className="text-white font-bold text-left">
-                        Duration
+                        Duration estimation
                       </span>
                       <Input
                         type="text"
@@ -127,6 +127,7 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
                         className="rounded-[10px] text-white"
                       />
                     </div>
+                    {/*
                     <div className="flex flex-col w-full space-y-2 mt-5">
                       <span className="text-white font-bold text-left">
                         Champion Score
@@ -140,6 +141,7 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
                         className="rounded-[10px] text-white"
                       />
                     </div>
+*/}
                     <div className="flex items-center space-x-2 mt-5">
                       <Checkbox
                         id="isEnabled"

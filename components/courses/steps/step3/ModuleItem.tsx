@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -35,6 +35,22 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
   const [quiz, setQuiz] = useState<Quizz | null>(quizz);
   const token = useCurrentToken();
 
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      if (quizz) {
+        try {
+          const fetchedQuiz = await getQuizByAdmin(quizz._id, token);
+          setQuiz(fetchedQuiz);
+        } catch (error) {
+          toast.error("Failed to fetch quiz details.");
+          console.error("Error fetching quiz:", error);
+        }
+      }
+    };
+
+    fetchQuiz();
+  }, [quizz, token]);
+
   if (!module || !module.id) {
     return null;
   }
@@ -67,7 +83,7 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
         isEnabled: true,
         questions: [],
         duration: "30 minutes",
-        champScore: 0,
+        champScore: 100,
       };
       const createdQuiz = await createQuizInModule(
         module.id,

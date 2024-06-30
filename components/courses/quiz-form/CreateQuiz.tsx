@@ -9,12 +9,13 @@ import {
 } from "@/components/ui/accordion";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
+import { Checkbox } from "../../ui/checkbox";
 import { Question } from "@/lib/types";
 import {
   deleteQuestionInQuiz,
   getQuizByAdmin,
   addQuestionInQuiz,
-  updateQuestionAnswer,
+  updateQuizById,
 } from "@/lib/api";
 import { Pencil, Save, X } from "lucide-react";
 import { toast } from "sonner";
@@ -30,13 +31,15 @@ const CreateQuiz = ({ quizId }: Props) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [quiz, setQuiz] = useState<any>(null);
   const token = useCurrentToken();
 
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const quiz = await getQuizByAdmin(quizId, token);
-        setQuestions(quiz.questions);
+        const quizData = await getQuizByAdmin(quizId, token);
+        setQuiz(quizData);
+        setQuestions(quizData.questions);
         setIsLoading(false);
       } catch (error) {
         toast.error("An error occurred while fetching the questions.");
@@ -137,16 +140,10 @@ const CreateQuiz = ({ quizId }: Props) => {
     }
   };
 
-  const handleSaveQuestion = async (index: number) => {
-    const questionToSave = questions[index];
-
+  const handleSaveQuestion = async () => {
+    const updatedQuiz = { ...quiz, questions };
     try {
-      await updateQuestionAnswer(
-        quizId,
-        questionToSave._id,
-        questionToSave,
-        token,
-      );
+      await updateQuizById(quizId, updatedQuiz, token);
       toast.success("Question updated successfully");
     } catch (error) {
       toast.error("An error occurred while updating the question.");
@@ -158,8 +155,21 @@ const CreateQuiz = ({ quizId }: Props) => {
     return <LoadingSpinner text="Loading questions..." />;
   }
 
+  const totalQuestionScore = questions.reduce(
+    (total, question) => total + question.questionScore,
+    0,
+  );
+
   return (
     <div className="space-y-4 mt-2">
+      {quiz.champScore && (
+        <div className="flex items-center justify-between">
+          <span className="text-md text-white">
+            Remaining Score: {quiz.champScore - totalQuestionScore}
+          </span>
+        </div>
+      )}
+
       <Accordion type="single" collapsible>
         {questions.map((q, qi) => (
           <AccordionItem
@@ -175,7 +185,7 @@ const CreateQuiz = ({ quizId }: Props) => {
                     <Button
                       className="ml-2"
                       onClick={() => {
-                        handleSaveQuestion(qi);
+                        handleSaveQuestion();
                         setEditIndex(null);
                       }}
                     >
@@ -225,19 +235,19 @@ const CreateQuiz = ({ quizId }: Props) => {
                       key={option._id}
                       className="flex items-center space-x-2 relative"
                     >
+                      <Checkbox
+                        checked={q.answer.includes(oi)}
+                        onCheckedChange={() => handleAnswerChange(qi, oi)}
+                        disabled={editIndex !== qi}
+                      />
                       <Input
                         type="text"
                         value={option.option}
                         onChange={(e) =>
                           handleOptionsChange(qi, oi, e.target.value)
                         }
-                        onClick={() => handleAnswerChange(qi, oi)}
                         readOnly={editIndex !== qi}
-                        className={`text-center border rounded py-2 px-4 w-full ${
-                          q.answer.includes(oi)
-                            ? "border-primary border-2 text-white"
-                            : "text-white"
-                        }`}
+                        className="text-center border rounded py-2 px-4 w-full text-white"
                       />
                       {editIndex === qi && (
                         <X className="text-secondary absolute -top-3 -right-2 " />
