@@ -78,9 +78,9 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
   const handleCreateQuiz = async () => {
     try {
       const newQuizData: Partial<Quizz> = {
-        name: "New Quiz",
+        name: "New module" + Date.now().toString(),
         instructions: "New instructions",
-        isEnabled: true,
+        isEnabled: false,
         questions: [],
         duration: "30 minutes",
         champScore: 100,

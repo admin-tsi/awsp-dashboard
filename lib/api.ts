@@ -514,7 +514,7 @@ export async function addQuestionInQuiz(
 ): Promise<void> {
   const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
   try {
-    await axios.post(`${baseUrl}/quizzes/${quizId}/questions`, data, {
+    await axios.patch(`${baseUrl}/quizzes/${quizId}/add-question`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

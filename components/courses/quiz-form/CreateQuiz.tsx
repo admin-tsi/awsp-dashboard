@@ -83,6 +83,17 @@ const CreateQuiz = ({ quizId }: Props) => {
   };
 
   const handleQuestionScoreChange = (index: number, newScore: number) => {
+    const totalQuestionScore = questions.reduce(
+      (total, question, i) =>
+        i === index ? total : total + question.questionScore,
+      0,
+    );
+
+    if (totalQuestionScore + newScore > quiz.champScore) {
+      toast.error("Cannot attribute more points than the remaining score.");
+      return;
+    }
+
     const updatedQuestions = questions.map((q, i) =>
       i === index ? { ...q, questionScore: newScore } : q,
     );
@@ -104,22 +115,39 @@ const CreateQuiz = ({ quizId }: Props) => {
   };
 
   const handleAddQuestion = async () => {
-    if (questions.length >= 4) {
-      toast.error("You can only add up to 4 questions.");
+    const newQuestion = {
+      question: "What is the primary goal of physical therapy?",
+      options: [
+        {
+          option: "To diagnose illnesses",
+        },
+        {
+          option: "To improve mobility and function",
+        },
+        {
+          option: "To prescribe medication",
+        },
+        {
+          option: "To perform surgeries",
+        },
+      ],
+      answer: [0],
+      questionScore: 5,
+    };
+
+    const totalQuestionScore = questions.reduce(
+      (total, question) => total + question.questionScore,
+      0,
+    );
+
+    if (totalQuestionScore + newQuestion.questionScore > quiz.champScore) {
+      toast.error("Cannot add question. Not enough remaining score.");
       return;
     }
 
-    const newQuestion: Question = {
-      question: "",
-      answer: [],
-      options: [{ option: "", _id: Date.now().toString() }],
-      explanation: "",
-      isEnabled: true,
-      questionScore: 0,
-      _id: Date.now().toString(),
-    };
     try {
       await addQuestionInQuiz(quizId, newQuestion, token);
+      // @ts-ignore
       setQuestions([...questions, newQuestion]);
       toast.success("Question added successfully.");
     } catch (error) {
@@ -130,6 +158,7 @@ const CreateQuiz = ({ quizId }: Props) => {
 
   const handleRemoveQuestion = async (index: number) => {
     const questionToRemove = questions[index];
+    console.log("questionToRemove", questionToRemove);
     try {
       await deleteQuestionInQuiz(quizId, questionToRemove._id, token);
       setQuestions(questions.filter((_, i) => i !== index));
@@ -142,6 +171,13 @@ const CreateQuiz = ({ quizId }: Props) => {
 
   const handleSaveQuestion = async () => {
     const updatedQuiz = { ...quiz, questions };
+    const hasCorrectOption = questions.every((q) => q.answer.length > 0);
+    if (!hasCorrectOption) {
+      toast.error(
+        "Please select at least one correct option for each question.",
+      );
+      return;
+    }
     try {
       await updateQuizById(quizId, updatedQuiz, token);
       toast.success("Question updated successfully");
@@ -156,147 +192,163 @@ const CreateQuiz = ({ quizId }: Props) => {
   }
 
   const totalQuestionScore = questions.reduce(
-    (total, question) => total + question.questionScore,
+    (total, question) => total + (question.questionScore || 0),
     0,
   );
 
+  const remainingScore = quiz.champScore - totalQuestionScore;
+
   return (
     <div className="space-y-4 mt-2">
-      {quiz.champScore && (
+      {quiz.champScore && !isNaN(remainingScore) && (
         <div className="flex items-center justify-between">
           <span className="text-md text-white">
-            Remaining Score: {quiz.champScore - totalQuestionScore}
+            Remaining Score: {remainingScore}
           </span>
         </div>
       )}
 
-      <Accordion type="single" collapsible>
-        {questions.map((q, qi) => (
-          <AccordionItem
-            key={qi}
-            value={`question-${qi}`}
-            className="border-2 rounded-[10px] px-4 py-2 space-y-2 mb-4"
-          >
-            <AccordionTrigger className="hover:no-underline">
-              <div className="flex justify-between items-center">
-                <span className="text-md text-white">{`Q${qi + 1}: ${q.question}`}</span>
-                <div className="ml-2 flex space-x-2">
-                  {editIndex === qi ? (
-                    <Button
-                      className="ml-2"
-                      onClick={() => {
-                        handleSaveQuestion();
-                        setEditIndex(null);
-                      }}
-                    >
-                      <Save className="mr-2" />
-                      Save
-                    </Button>
-                  ) : (
-                    <Button
-                      className="ml-2"
-                      onClick={() => setEditIndex(qi)}
-                      variant="ghost"
-                      size={"icon"}
-                    >
-                      <Pencil />
-                    </Button>
-                  )}
-                  <DeleteConfirmation
-                    onDelete={() => handleRemoveQuestion(qi)}
-                    entityName="question"
+      {questions.length === 0 ? (
+        <div className="text-center text-white">No questions available.</div>
+      ) : (
+        <Accordion type="single" collapsible>
+          {questions.map((q, qi) => (
+            <AccordionItem
+              key={qi}
+              value={`question-${qi}`}
+              className="border-2 rounded-[10px] px-4 py-2 space-y-2 mb-4"
+            >
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex justify-between items-center">
+                  <span className="text-md text-white">{`Q${qi + 1}: ${q.question}`}</span>
+                  <div className="ml-2 flex space-x-2">
+                    {editIndex === qi ? (
+                      <Button
+                        className="ml-2"
+                        onClick={() => {
+                          handleSaveQuestion();
+                          setEditIndex(null);
+                        }}
+                      >
+                        <Save className="mr-2" />
+                        Save
+                      </Button>
+                    ) : (
+                      <Button
+                        className="ml-2"
+                        onClick={() => setEditIndex(qi)}
+                        variant="ghost"
+                        size={"icon"}
+                      >
+                        <Pencil />
+                      </Button>
+                    )}
+                    <DeleteConfirmation
+                      onDelete={() => handleRemoveQuestion(qi)}
+                      entityName="question"
+                    />
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-2">
+                  <label
+                    className="text-white font-bold"
+                    htmlFor={`question-${qi}`}
+                  >
+                    Question
+                  </label>
+                  <Input
+                    id={`question-${qi}`}
+                    type="text"
+                    value={q.question}
+                    onChange={(e) => handleQuestionChange(qi, e.target.value)}
+                    placeholder="Type the question"
+                    className="text-center border rounded py-2 px-4 placeholder-center w-full text-white placeholder:text-white"
+                    readOnly={editIndex !== qi}
                   />
                 </div>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-2">
-                <label
-                  className="text-white font-bold"
-                  htmlFor={`question-${qi}`}
-                >
-                  Question
-                </label>
-                <Input
-                  id={`question-${qi}`}
-                  type="text"
-                  value={q.question}
-                  onChange={(e) => handleQuestionChange(qi, e.target.value)}
-                  placeholder="Type the question"
-                  className="text-center border rounded py-2 px-4 placeholder-center w-full text-white placeholder:text-white"
-                  readOnly={editIndex !== qi}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-white font-bold">Correct Options</label>
-                <div className="grid grid-cols-2 gap-4">
-                  {q.options.map((option, oi) => (
-                    <div
-                      key={option._id}
-                      className="flex items-center space-x-2 relative"
-                    >
-                      <Checkbox
-                        checked={q.answer.includes(oi)}
-                        onCheckedChange={() => handleAnswerChange(qi, oi)}
-                        disabled={editIndex !== qi}
-                      />
-                      <Input
-                        type="text"
-                        value={option.option}
-                        onChange={(e) =>
-                          handleOptionsChange(qi, oi, e.target.value)
-                        }
-                        readOnly={editIndex !== qi}
-                        className="text-center border rounded py-2 px-4 w-full text-white"
-                      />
-                      {editIndex === qi && (
-                        <X className="text-secondary absolute -top-3 -right-2 " />
-                      )}
-                    </div>
-                  ))}
+                <div className="space-y-2">
+                  <label className="text-white font-bold">
+                    Correct Options
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    {q.options.map((option, oi) => (
+                      <div
+                        key={option._id}
+                        className="flex items-center space-x-2 relative"
+                      >
+                        <Checkbox
+                          checked={q.answer.includes(oi)}
+                          onCheckedChange={() => handleAnswerChange(qi, oi)}
+                          disabled={editIndex !== qi}
+                        />
+                        <Input
+                          type="text"
+                          value={option.option}
+                          onChange={(e) =>
+                            handleOptionsChange(qi, oi, e.target.value)
+                          }
+                          readOnly={editIndex !== qi}
+                          className="text-center border rounded py-2 px-4 w-full text-white"
+                        />
+                        {editIndex === qi && (
+                          <X className="text-secondary absolute -top-3 -right-2 " />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label
-                  className="text-white font-bold"
-                  htmlFor={`explanation-${qi}`}
-                >
-                  Explanation
-                </label>
-                <Input
-                  id={`explanation-${qi}`}
-                  type="text"
-                  value={q.explanation}
-                  onChange={(e) => handleExplanationChange(qi, e.target.value)}
-                  placeholder="Explanation"
-                  className="text-center border rounded py-2 px-4 placeholder-center w-full text-white placeholder:text-white"
-                  readOnly={editIndex !== qi}
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  className="text-white font-bold"
-                  htmlFor={`questionScore-${qi}`}
-                >
-                  Question Score
-                </label>
-                <Input
-                  id={`questionScore-${qi}`}
-                  type="number"
-                  value={q.questionScore}
-                  onChange={(e) =>
-                    handleQuestionScoreChange(qi, parseInt(e.target.value))
-                  }
-                  placeholder="Question Score"
-                  className="text-center border rounded py-2 px-4 placeholder-center w-full text-white placeholder:text-white"
-                  readOnly={editIndex !== qi}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-      <Button onClick={handleAddQuestion} disabled={questions.length >= 4}>
+                <div className="space-y-2">
+                  <label
+                    className="text-white font-bold"
+                    htmlFor={`explanation-${qi}`}
+                  >
+                    Explanation
+                  </label>
+                  <Input
+                    id={`explanation-${qi}`}
+                    type="text"
+                    value={q.explanation}
+                    onChange={(e) =>
+                      handleExplanationChange(qi, e.target.value)
+                    }
+                    placeholder="Explanation"
+                    className="text-center border rounded py-2 px-4 placeholder-center w-full text-white placeholder:text-white"
+                    readOnly={editIndex !== qi}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label
+                    className="text-white font-bold"
+                    htmlFor={`questionScore-${qi}`}
+                  >
+                    Question Score
+                  </label>
+                  <Input
+                    id={`questionScore-${qi}`}
+                    type="number"
+                    value={q.questionScore}
+                    onChange={(e) =>
+                      handleQuestionScoreChange(
+                        qi,
+                        parseInt(e.target.value) || 0,
+                      )
+                    }
+                    placeholder="Question Score"
+                    className="text-center border rounded py-2 px-4 placeholder-center w-full text-white placeholder:text-white"
+                    readOnly={editIndex !== qi}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
+      <Button
+        onClick={handleAddQuestion}
+        disabled={quiz.champScore - totalQuestionScore === 0}
+      >
         Add Question
       </Button>
     </div>

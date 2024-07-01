@@ -186,11 +186,8 @@ const QuizModal = ({ action, quizData, quizId, token }: Props) => {
                       Continue
                     </Button>
                   ) : (
-                    <AlertDialogAction
-                      className="rounded-[10px] text-black"
-                      onClick={handleSave}
-                    >
-                      Save
+                    <AlertDialogAction className="rounded-[10px] text-black">
+                      Close
                     </AlertDialogAction>
                   )}
                 </div>
