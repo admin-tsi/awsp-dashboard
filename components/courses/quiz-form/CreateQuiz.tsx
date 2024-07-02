@@ -118,19 +118,19 @@ const CreateQuiz = ({ quizId }: Props) => {
   const handleAddQuestion = async () => {
     setIsAddingQuestion(true);
     const newQuestion = {
-      question: "What is the primary goal of physical therapy?",
+      question: "What is that question ?",
       options: [
         {
-          option: "To diagnose illnesses",
+          option: "Option 1",
         },
         {
-          option: "To improve mobility and function",
+          option: "Option 2",
         },
         {
-          option: "To prescribe medication",
+          option: "Option 3",
         },
         {
-          option: "To perform surgeries",
+          option: "Option 4",
         },
       ],
       answer: [0],
@@ -297,9 +297,6 @@ const CreateQuiz = ({ quizId }: Props) => {
                           readOnly={editIndex !== qi}
                           className="text-center border rounded py-2 px-4 w-full text-white"
                         />
-                        {editIndex === qi && (
-                          <X className="text-secondary absolute -top-3 -right-2 " />
-                        )}
                       </div>
                     ))}
                   </div>
