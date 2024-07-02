@@ -32,6 +32,7 @@ const CreateQuiz = ({ quizId }: Props) => {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [quiz, setQuiz] = useState<any>(null);
+  const [isAddingQuestion, setIsAddingQuestion] = useState<boolean>(false);
   const token = useCurrentToken();
 
   useEffect(() => {
@@ -115,6 +116,7 @@ const CreateQuiz = ({ quizId }: Props) => {
   };
 
   const handleAddQuestion = async () => {
+    setIsAddingQuestion(true);
     const newQuestion = {
       question: "What is the primary goal of physical therapy?",
       options: [
@@ -142,23 +144,26 @@ const CreateQuiz = ({ quizId }: Props) => {
 
     if (totalQuestionScore + newQuestion.questionScore > quiz.champScore) {
       toast.error("Cannot add question. Not enough remaining score.");
+      setIsAddingQuestion(false);
       return;
     }
 
     try {
       await addQuestionInQuiz(quizId, newQuestion, token);
+
       // @ts-ignore
       setQuestions([...questions, newQuestion]);
       toast.success("Question added successfully.");
     } catch (error) {
       toast.error("An error occurred while adding the question.");
       console.error("Error adding question:", error);
+    } finally {
+      setIsAddingQuestion(false);
     }
   };
 
   const handleRemoveQuestion = async (index: number) => {
     const questionToRemove = questions[index];
-    console.log("questionToRemove", questionToRemove);
     try {
       await deleteQuestionInQuiz(quizId, questionToRemove._id, token);
       setQuestions(questions.filter((_, i) => i !== index));
@@ -349,7 +354,11 @@ const CreateQuiz = ({ quizId }: Props) => {
         onClick={handleAddQuestion}
         disabled={quiz.champScore - totalQuestionScore === 0}
       >
-        Add Question
+        {isAddingQuestion ? (
+          <LoadingSpinner text="Adding..." />
+        ) : (
+          "Add Question"
+        )}
       </Button>
     </div>
   );
