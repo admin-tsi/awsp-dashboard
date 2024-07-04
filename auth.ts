@@ -33,6 +33,7 @@ export const {
 
           const { user, token, expiresIn } = response.data;
           console.log("expirin", response.data);
+          if (response.data.user.role === "client") return;
           if (user && token) {
             user.accessToken = token;
             user.expireIn = expiresIn;
