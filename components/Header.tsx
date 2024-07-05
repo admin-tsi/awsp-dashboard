@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import { UserNav } from "@/components/UserNav";
-import { SearchInput } from "@/components/Search";
 import Link from "next/link";
 import logo from "@/public/logo.svg";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -21,7 +20,9 @@ const Header = () => {
             height={64}
           />
         </Link>
+        {/*
         <SearchInput className="hidden sm:block" />
+*/}
       </div>
       <div className="flex items-center ml-auto">
         <div className="flex items-center space-x-4">
