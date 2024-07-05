@@ -160,7 +160,7 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
             onClick={handleSubmit(onSubmit)}
             disabled={isLoading}
           >
-            {isLoading ? <LoadingSpinner text="Saving..." /> : "Continue"}
+            {isLoading ? <LoadingSpinner text="Saving..." /> : "Save"}
           </Button>
         </>
       )}
