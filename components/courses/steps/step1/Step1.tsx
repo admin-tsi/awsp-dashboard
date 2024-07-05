@@ -99,7 +99,7 @@ const Step1: React.FC<Step1Props> = ({ onContinue, microcredentialId }) => {
               <FormItem>
                 <FormLabel>Price ($)</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input type="number" {...field} />
                 </FormControl>
                 <FormDescription>Price of the microcredential.</FormDescription>
                 <FormMessage />
