@@ -117,7 +117,7 @@ const Step2: React.FC<Step2Props> = ({
           Previous
         </Button>
         <Button type="button" variant="outline" onClick={onContinue}>
-          Continue
+          Save
         </Button>
       </div>
     </>
