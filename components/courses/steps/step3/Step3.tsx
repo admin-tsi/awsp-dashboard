@@ -122,9 +122,9 @@ const Step3: React.FC<Step3Props> = ({
         <Button type="button" variant="outline" onClick={onPrevious}>
           Previous
         </Button>
-        <Button type="button" variant="outline" onClick={onSubmit}>
+        {/*        <Button type="button" variant="outline" onClick={onSubmit}>
           Submit
-        </Button>
+        </Button>*/}
       </div>
     </>
   );
