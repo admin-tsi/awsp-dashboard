@@ -12,7 +12,6 @@ import { Course, ModuleDetails, Quizz } from "@/lib/types";
 import CourseModal from "@/components/courses/steps/step3/courses/CourseModal";
 import { useCurrentToken } from "@/hooks/use-current-token";
 import QuizModal from "@/components/courses/steps/step3/quizzes/QuizModal";
-import ExerciseModal from "@/components/courses/steps/step3/exercises/ExerciseModal";
 import {
   createCourseInModule,
   createQuizInModule,
