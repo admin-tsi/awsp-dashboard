@@ -1,3 +1,4 @@
+/*
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -228,3 +229,4 @@ const ExerciseModal: React.FC<ExerciseModalProps> = ({
 };
 
 export default ExerciseModal;
+*/
