@@ -16,6 +16,7 @@ export type MyUserType = {
 };
 
 const api = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const {
   handlers: { POST, GET },
   auth,
@@ -32,32 +33,50 @@ export const {
           });
 
           const { user, token, expiresIn } = response.data;
-          console.log("expirin", response.data);
-          if (response.data.user.role === "client") return;
-          if (user && token) {
-            user.accessToken = token;
-            user.expireIn = expiresIn;
-            return user;
-          } else {
+
+          // Validate the response data
+          if (!user || !token) {
             return null;
           }
-        } catch (e) {
-          console.error(e);
+
+          // Create a properly structured user object
+          const authUser = {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+            isverified: user.isverified,
+            accessToken: token,
+            expireIn: expiresIn,
+            emailVerified: null, // Set this based on your needs
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            __v: user.__v,
+          };
+
+          return authUser;
+        } catch (error) {
+          console.error("Authentication error:", error);
           return null;
         }
       },
     }),
   ],
 
+  pages: {
+    signIn: "/login",
+    error: "/login", // Add this to handle errors gracefully
+  },
+
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24 hours
   },
+
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
         token.user = user as MyUserType;
       }
-
       return token;
     },
     session: async ({ session, token }) => {

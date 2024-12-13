@@ -13,12 +13,12 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface VideoAssetProps {
   initialUrl?: string;
-  moduleId: string;
+  courseId: string;
 }
 
 const VideoUploadMux: React.FC<VideoAssetProps> = ({
   initialUrl,
-  moduleId,
+  courseId,
 }) => {
   const [url, setUrl] = useState<string>(initialUrl || "");
   const [playbackId, setPlaybackId] = useState<string | null>(null);
@@ -30,22 +30,38 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
   const getCourse = async () => {
     try {
       setCheckingVideo(true);
-      const getVideo = await getCourseById(moduleId, token);
+      const getVideo = await getCourseById(courseId, token);
       const assetId = getVideo.video;
+      const existingPlaybackId = getVideo.playback_id;
 
-      if (assetId) {
+      if (existingPlaybackId) {
+        setPlaybackId(existingPlaybackId);
+      } else if (assetId) {
         const videoExists = await checkVideoExistence(assetId);
         if (videoExists) {
-          const playbackId = await getPlaybackId(assetId);
-          if (playbackId) {
-            setPlaybackId(playbackId);
+          const newPlaybackId = await getPlaybackId(assetId);
+          if (newPlaybackId) {
+            setPlaybackId(newPlaybackId);
+            await updateCourseById(
+              courseId,
+              { playback_id: newPlaybackId },
+              token,
+            );
           } else {
             toast.error("The video does not exist on Mux.");
-            await updateCourseById(moduleId, { video: "" }, token);
+            await updateCourseById(
+              courseId,
+              { video: "", playback_id: "" },
+              token,
+            );
           }
         } else {
           toast.error("The video does not exist on Mux.");
-          await updateCourseById(moduleId, { video: "" }, token);
+          await updateCourseById(
+            courseId,
+            { video: "", playback_id: "" },
+            token,
+          );
         }
       }
     } catch (error) {
@@ -83,7 +99,7 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
 
   useEffect(() => {
     getCourse();
-  }, [moduleId, token]);
+  }, [courseId, token]);
 
   const createAsset = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -121,9 +137,18 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
         const data = await response.json();
 
         if (data.asset && data.asset.status === "ready") {
-          const playbackId = data.asset.playback_ids[0].id;
-          setPlaybackId(playbackId);
-          await updateCourseById(moduleId, { video: assetId }, token);
+          const newPlaybackId = data.asset.playback_ids[0].id;
+          setPlaybackId(newPlaybackId);
+
+          await updateCourseById(
+            courseId,
+            {
+              video: assetId,
+              playback_id: newPlaybackId,
+            },
+            token,
+          );
+
           toast.success("Video is ready to play.");
           setLoading(false);
           setShowUploadForm(false);
@@ -148,7 +173,7 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
       {checkingVideo ? (
         <div className="flex flex-col items-center justify-center w-full h-full">
           <LoadingSpinner />
-          <p className="mt-2 text-gray-600"></p>
+          <p className="mt-2 text-gray-600">Checking video status...</p>
         </div>
       ) : (
         <>
@@ -186,7 +211,7 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
                 placeholder="Enter video URL"
                 className="px-4 py-2 border border-gray-300 rounded w-full"
               />
-              <Alert variant={"destructive"}>
+              <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
                 <AlertTitle>Notice!</AlertTitle>
                 <AlertDescription>
@@ -200,9 +225,7 @@ const VideoUploadMux: React.FC<VideoAssetProps> = ({
                 disabled={loading}
               >
                 {loading ? (
-                  <>
-                    <LoadingSpinner text="Uploading..." />
-                  </>
+                  <LoadingSpinner text="Uploading..." />
                 ) : (
                   "Upload Video"
                 )}

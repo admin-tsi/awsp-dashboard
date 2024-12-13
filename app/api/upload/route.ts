@@ -25,7 +25,12 @@ export async function POST(request: Request) {
   try {
     const formattedUrl = formatGoogleDriveLink(url);
     const asset = await mux.video.assets.create({
-      input: [{ url: formattedUrl }],
+      input: [
+        {
+          url: formattedUrl,
+          generated_subtitles: [{ language_code: "en", name: "English CC" }],
+        },
+      ],
       playback_policy: ["public"],
       encoding_tier: "baseline",
     });

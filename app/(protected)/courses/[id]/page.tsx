@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { z, ZodSchema } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getMicrocredentialById, updateMicrocredential } from "@/lib/api";
+import { getMicrocredentialById } from "@/lib/api";
 import { useCurrentToken } from "@/hooks/use-current-token";
 import { Separator } from "@/components/ui/separator";
 import Step1 from "@/components/courses/steps/step1/Step1";
@@ -14,15 +14,15 @@ import { ModuleDetails } from "@/lib/types";
 import { useFormStore } from "@/stores/courses/steps/useFormStore";
 import CustomBreadcrumb from "@/components/CustomBreadcumb";
 import CustomStepBreadcrumb from "@/components/courses/steps/CustomStepBreadcrumb";
-import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const FormSchema = z.object({
   title: z.string(),
-  topic: z.string(),
-  price: z.number(),
-  duration: z.string(),
-  description: z.string(),
-  thumbnail: z.string(),
+  price_usd: z.number(),
+  topic_en: z.string(),
+  description_en: z.string(),
+  thumbnail: z.string().optional(),
 });
 
 type FormData = z.infer<typeof FormSchema>;
@@ -32,56 +32,98 @@ interface ThumbnailState {
   previewUrl: string | null;
 }
 
+const FormSkeleton = () => (
+  <div className="space-y-8 w-full animate-pulse">
+    <div className="space-y-4">
+      {/* Title field skeleton */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+
+      {/* Topic field skeleton */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+
+      {/* Description field skeleton */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-28" />
+        <Skeleton className="h-32 w-full" />
+      </div>
+
+      {/* Price field skeleton */}
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-10 w-48" />
+      </div>
+    </div>
+
+    {/* Button skeleton */}
+    <div className="flex justify-end">
+      <Skeleton className="h-10 w-32" />
+    </div>
+  </div>
+);
+
 export default function Page({ params }: { params: { id: string } }) {
-  const [step, setStep] = useState(1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialStep = parseInt(searchParams.get("step") || "1");
+  const [step, setStep] = useState(initialStep);
   const [thumbnail, setThumbnail] = useState<ThumbnailState>({
     file: null,
     previewUrl: null,
   });
   const [modules, setModules] = useState<ModuleDetails[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const token = useCurrentToken();
-  const { formData, mergeFormData, clearFormData } = useFormStore((state) => ({
+  const { formData } = useFormStore((state) => ({
     formData: state.formData[params.id] || {},
-    mergeFormData: state.mergeFormData,
-    clearFormData: state.clearFormData,
   }));
 
   const formMethods = useForm<FormData>({
-    resolver: zodResolver(FormSchema as unknown as ZodSchema<FormData>),
+    resolver: zodResolver(FormSchema),
     defaultValues: formData,
   });
 
-  const { handleSubmit, reset, control } = formMethods;
+  // Update URL when step changes
+  const handleStepChange = (newStep: number) => {
+    setStep(newStep);
+    const newUrl = `${window.location.pathname}?step=${newStep}`;
+    window.history.pushState({ step: newStep }, "", newUrl);
+  };
 
   useEffect(() => {
-    if (!token) return;
+    const fetchData = async () => {
+      if (!token) return;
 
-    setIsLoading(true);
-    getMicrocredentialById(params.id, token)
-      .then((data) => {
+      try {
+        const data = await getMicrocredentialById(params.id, token);
         setThumbnail({ file: null, previewUrl: data.thumbnail || "" });
-        mergeFormData(params.id, data);
-        reset({ ...data, ...formData });
+        formMethods.reset(data);
         setModules(data.modules || []);
-        setIsLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Failed to fetch microcredential", error);
+      } finally {
         setIsLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, [params.id, token]);
 
-  const onSubmit = async (data: FormData) => {
-    try {
-      await updateMicrocredential(params.id, data, token);
-      clearFormData(params.id);
-      toast.success("Microcredential has been updated successfully.");
-    } catch (error) {
-      console.error("Failed to update microcredential", error);
-      toast.error("An error occurred while updating the microcredential.");
-    }
-  };
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const step = event.state?.step || 1;
+      setStep(step);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const steps = ["Step 1", "Step 2", "Step 3"];
 
@@ -91,42 +133,48 @@ export default function Page({ params }: { params: { id: string } }) {
       <div className="col-span-2 p-4">
         <div className="text-xl flex items-center gap-4">
           Microcredential Info
-          <CustomStepBreadcrumb
-            steps={steps}
-            currentStep={step}
-            setStep={setStep}
-          />
+          {!isLoading && (
+            <CustomStepBreadcrumb
+              steps={steps}
+              currentStep={step}
+              setStep={handleStepChange}
+            />
+          )}
         </div>
         <Separator className="my-4" />
-        <FormProvider {...formMethods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {step === 1 && (
-              <Step1
-                onContinue={() => setStep(2)}
-                microcredentialId={params.id}
-              />
-            )}
-            {step === 2 && (
-              <Step2
-                onPrevious={() => setStep(1)}
-                onContinue={() => setStep(3)}
-                thumbnail={thumbnail}
-                setThumbnail={setThumbnail}
-                microcredentialId={params.id}
-              />
-            )}
-            {step === 3 && (
-              <Step3
-                modules={modules}
-                setModules={setModules}
-                onPrevious={() => setStep(2)}
-                onSubmit={handleSubmit(onSubmit)}
-                microcredentialId={params.id}
-                token={token}
-              />
-            )}
-          </form>
-        </FormProvider>
+
+        {isLoading ? (
+          <FormSkeleton />
+        ) : (
+          <FormProvider {...formMethods}>
+            <div className="space-y-6">
+              {step === 1 && (
+                <Step1
+                  onContinue={() => handleStepChange(2)}
+                  microcredentialId={params.id}
+                />
+              )}
+              {step === 2 && (
+                <Step2
+                  onPrevious={() => handleStepChange(1)}
+                  onContinue={() => handleStepChange(3)}
+                  thumbnail={thumbnail}
+                  setThumbnail={setThumbnail}
+                  microcredentialId={params.id}
+                />
+              )}
+              {step === 3 && (
+                <Step3
+                  modules={modules}
+                  setModules={setModules}
+                  onPrevious={() => handleStepChange(2)}
+                  microcredentialId={params.id}
+                  token={token}
+                />
+              )}
+            </div>
+          </FormProvider>
+        )}
       </div>
     </main>
   );

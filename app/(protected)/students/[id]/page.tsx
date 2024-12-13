@@ -41,6 +41,7 @@ export default function Page({
       lastname: "",
       phone: "",
       role: "",
+      type_compte: "",
       clientData: null,
     },
   });
@@ -66,8 +67,6 @@ export default function Page({
       });
   }, [params.id, token, setValue, methods]);
 
-  // Get the current path and extract parts
-
   return (
     <FormProvider {...methods}>
       <form className="w-full mx-auto p-5">
@@ -77,144 +76,199 @@ export default function Page({
             <LoadingSpinner text="Loading..." />
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {!isLoading && user && (
-            <>
-              <FormField
-                name="firstname"
-                control={methods.control}
-                render={({ field }) => (
+        {!isLoading && user && (
+          <div className="space-y-8">
+            {/* Personal Information Section */}
+            <div>
+              <h2 className="text-xl font-semibold mb-4">
+                Personal Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  name="firstname"
+                  control={methods.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="firstname">First Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} id="firstname" disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="lastname"
+                  control={methods.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="lastname">Last Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} id="lastname" disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="email"
+                  control={methods.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="email">Email</FormLabel>
+                      <FormControl>
+                        <Input {...field} id="email" disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="phone"
+                  control={methods.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="phone">Phone</FormLabel>
+                      <FormControl>
+                        <Input {...field} id="phone" disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Account Information Section */}
+            <div>
+              <h2 className="text-xl font-semibold mb-4">
+                Account Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  name="role"
+                  control={methods.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="role">Role</FormLabel>
+                      <FormControl>
+                        <Input {...field} id="role" disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="type_compte"
+                  control={methods.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="type_compte">Account Type</FormLabel>
+                      <FormControl>
+                        <Input {...field} id="type_compte" disabled />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="isverified"
+                  control={methods.control}
+                  render={() => (
+                    <FormItem>
+                      <FormLabel htmlFor="isverified">Verified</FormLabel>
+                      <FormControl>
+                        <Switch
+                          id="isverified"
+                          checked={user?.isverified}
+                          disabled
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Client Data Section */}
+            {user.clientData && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4">
+                  Additional Information
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormItem>
-                    <FormLabel htmlFor="firstname">First Name</FormLabel>
+                    <FormLabel>Gender</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.sex} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>Country</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.awsp_country} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>Nationality</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.nationality} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>Locality</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.locality} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>State</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.state} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>Profession</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.profession} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>Education</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.education} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>Communication Preference</FormLabel>
+                    <FormControl>
+                      <Input value={user.clientData.communication} disabled />
+                    </FormControl>
+                  </FormItem>
+                  <FormItem>
+                    <FormLabel>Passions</FormLabel>
                     <FormControl>
                       <Input
-                        {...field}
-                        id="firstname"
-                        placeholder="First Name"
-                        className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        value={user.clientData.passions.join(", ")}
                         disabled
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
-                )}
-              />
-              <FormField
-                name="lastname"
-                control={methods.control}
-                render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="lastname">Last Name</FormLabel>
+                    <FormLabel>Sports</FormLabel>
                     <FormControl>
                       <Input
-                        {...field}
-                        id="lastname"
-                        placeholder="Last Name"
-                        className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        value={user.clientData.sports.join(", ")}
                         disabled
                       />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
-                )}
-              />
-              <FormField
-                name="email"
-                control={methods.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="email">Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id="email"
-                        placeholder="Email"
-                        className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="phone"
-                control={methods.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="phone">Phone</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id="phone"
-                        placeholder="Phone"
-                        className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="age"
-                control={methods.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="age">Age</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id="age"
-                        placeholder="Age"
-                        className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="role"
-                control={methods.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="role">Role</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id="role"
-                        placeholder="Role"
-                        className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="isverified"
-                control={methods.control}
-                render={() => (
-                  <FormItem>
-                    <FormLabel htmlFor="isverified">Verified</FormLabel>
-                    <FormControl>
-                      <Switch
-                        id="isverified"
-                        checked={user?.isverified}
-                        className="mt-1 block"
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
-          )}
-        </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </form>
     </FormProvider>
   );

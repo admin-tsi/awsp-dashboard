@@ -1,8 +1,5 @@
-"use client";
-
 import React, { useState } from "react";
-import { Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,10 +12,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 type DeleteConfirmationProps = {
   onDelete: () => void;
   entityName: string;
+  className?: string;
 };
 
 function DeleteConfirmation({ onDelete, entityName }: DeleteConfirmationProps) {
@@ -34,31 +33,38 @@ function DeleteConfirmation({ onDelete, entityName }: DeleteConfirmationProps) {
     <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <AlertDialogTrigger asChild>
         <Button
-          aria-label="Delete"
           variant="ghost"
-          size="sm"
-          onClick={() => setIsDialogOpen(true)}
+          className="inline-flex items-center justify-center rounded-md p-2 text-sm font-medium transition-colors hover:bg-destructive hover:text-destructive-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+          onClick={(e) => {
+            setIsDialogOpen(true);
+          }}
         >
-          <Trash />
+          <Trash2 className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="bg-card text-card-foreground border-border sm:max-w-[425px]">
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className="text-lg font-semibold text-foreground">
+            Delete {entityName}
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-muted-foreground mt-2">
             This action cannot be undone. This will permanently delete this{" "}
-            {entityName} and remove the data from our servers.
+            <span className="font-medium text-foreground">{entityName}</span>{" "}
+            and remove all associated data.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+        <AlertDialogFooter className="mt-6">
+          <AlertDialogCancel
+            onClick={() => setIsDialogOpen(false)}
+            className="bg-muted text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className="bg-muted text-white hover:bg-red-500"
             onClick={handleDelete}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            Delete
+            Delete {entityName}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

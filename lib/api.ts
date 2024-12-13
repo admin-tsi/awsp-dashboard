@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   Course,
+  Exercise,
   Microcredential,
   ModuleDetails,
   Quizz,
@@ -580,6 +581,114 @@ export async function deleteQuestionInQuizz(
       throw new Error(
         error.response?.data.message ||
           "An error occurred while deleting question in quiz",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function createExerciseInModule(
+  id: string,
+  data: Partial<Exercise>,
+  token: string | undefined,
+): Promise<Exercise> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    const response = await axios.post<Exercise>(
+      `${baseUrl}/modules/${id}/exercice`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while creating exercise in module",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function getExerciseById(
+  id: Exercise[],
+  token: string | undefined,
+): Promise<Exercise> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    const response = await axios.get<Exercise>(`${baseUrl}/exercices/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while fetching exercise",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function updateExerciseById(
+  id: string,
+  data: Partial<Exercise>,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  try {
+    await axios.patch(`${baseUrl}/exercices/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while updating exercise",
+      );
+    } else {
+      throw new Error("A non-Axios error occurred");
+    }
+  }
+}
+
+export async function updateExerciseFile(
+  id: string,
+  file: File,
+  token: string | undefined,
+): Promise<void> {
+  const baseUrl: string = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const formData = new FormData();
+  formData.append("exo_file", file);
+
+  try {
+    await axios.patch(`${baseUrl}/exercices/${id}/file`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data.message ||
+          "An error occurred while updating exercise file",
       );
     } else {
       throw new Error("A non-Axios error occurred");

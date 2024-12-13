@@ -17,4 +17,5 @@ export const UserSchema = z.object({
   phone: z.string(),
   role: z.string(),
   clientData: z.any(),
+  type_compte: z.string(),
 });

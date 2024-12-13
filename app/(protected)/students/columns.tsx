@@ -105,6 +105,15 @@ export const columns = (
     ),
   },
   {
+    accessorKey: "type_compte",
+    header: "Account Type",
+    cell: ({ row }) => (
+      <div onClick={() => handleEdit(row.original._id)}>
+        {row.getValue("type_compte") || "-"}
+      </div>
+    ),
+  },
+  {
     accessorKey: "isverified",
     header: "Status",
     cell: ({ row }) => {

@@ -1,8 +1,9 @@
 "use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FilePenLine } from "lucide-react";
+import { FilePenLine, Plus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useEffect, useState } from "react";
 import { useCurrentToken } from "@/hooks/use-current-token";
@@ -32,73 +33,95 @@ export default function Page() {
       .finally(() => setIsLoading(false));
   }, [token, setMicrocredentials]);
 
-  console.log(microcredentials);
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
+        <p className="text-destructive mb-4">{error}</p>
+        <Button onClick={() => window.location.reload()} variant="outline">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
   if (microcredentials.length === 0 && !isLoading) {
     return (
-      <main className="flex flex-col gap-5 w-full">
-        <h1 className="text-2xl font-semibold">Courses</h1>
-        <div className="flex flex-col items-center justify-center h-96">
-          <h1 className="text-md font-medium">No courses found.</h1>
+      <main className="flex flex-col gap-5 w-full p-4">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-semibold">Courses</h1>
+          <Button onClick={() => router.push("/courses/new")}>
+            <Plus className="mr-2 h-4 w-4" /> Add Course
+          </Button>
+        </div>
+        <div className="flex flex-col items-center justify-center min-h-[50vh] bg-muted/50 rounded-lg">
+          <p className="text-muted-foreground mb-4">No courses found</p>
+          <Button onClick={() => router.push("/courses/new")}>
+            Create Your First Course
+          </Button>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="flex flex-col gap-5 w-full">
-      <h1 className="text-2xl font-semibold">Courses</h1>
+    <main className="flex flex-col gap-5 w-full p-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-2xl font-semibold">Courses</h1>
+        <Button onClick={() => router.push("/courses/new")}>
+          <Plus className="mr-2 h-4 w-4" /> Add Course
+        </Button>
+      </div>
+
       <Tabs defaultValue="published" className="w-full">
-        <TabsList className="w-full rounded-none justify-start">
+        <TabsList className="w-full rounded-none justify-start mb-4">
           <TabsTrigger value="published">
             Published ({microcredentials.length})
           </TabsTrigger>
-          {/*
-          <TabsTrigger value="draft">Draft (0)</TabsTrigger>
-*/}
         </TabsList>
         <Separator />
-        <TabsContent value="published">
-          <div className="flex flex-wrap gap-1 justify-between py-10">
+
+        <TabsContent value="published" className="mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {isLoading
-              ? Array.from({ length: 4 }, (_, index) => (
+              ? Array.from({ length: 8 }, (_, index) => (
                   <SkeletonCard key={index} />
                 ))
               : microcredentials.map((mc) => (
                   <Card
                     key={mc._id}
-                    className="rounded-xl relative overflow-hidden group mb-5"
+                    className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-300"
                   >
-                    <div className="front-layer z-10 rounded-xl bg-background absolute transition duration-500 inset-0.5 "></div>
-                    <div className="spinner-container absolute inset-0 transition-opacity duration-300 ease-in-out opacity-100 hover:opacity-0 hidden group-hover:block">
-                      <div className="spinner absolute transition-opacity duration-300 ease-in-out opacity-100 hover:opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-                    </div>
-                    <div className="relative z-20">
+                    <div className="relative aspect-square">
                       <Image
                         src={mc.thumbnail}
                         alt={mc.title}
-                        width={300}
-                        height={360}
-                        className="rounded-t-xl max-h-52 min-w-full object-cover aspect-square"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        priority={microcredentials.indexOf(mc) < 4}
                       />
-                      <CardFooter className="flex justify-between p-4">
-                        <div className="flex-col">
-                          <h6 className="text-xs">{mc.title}</h6>
-                          <h6 className="text-xs">Price: ${mc.price}</h6>
-                        </div>
-                        <Button
-                          variant="outline"
-                          onClick={() => handleClick(mc._id)}
-                          className="rounded-full hover:border-primary hover:text-primary transition duration-300 ease-in-out bg-transparent"
-                        >
-                          <FilePenLine className="mr-2 h-3 w-3" /> Edit
-                        </Button>
-                      </CardFooter>
                     </div>
+                    <CardFooter className="flex flex-col p-4 gap-3">
+                      <div className="w-full">
+                        <h3 className="font-medium text-sm mb-1 line-clamp-2">
+                          {mc.title}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          ${mc.price_usd.toFixed(2)} USD
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={() => handleClick(mc._id)}
+                        className="w-full"
+                      >
+                        <FilePenLine className="mr-2 h-4 w-4" /> Edit Course
+                      </Button>
+                    </CardFooter>
                   </Card>
                 ))}
           </div>
         </TabsContent>
-        <TabsContent value="draft">No drafts.</TabsContent>
       </Tabs>
     </main>
   );

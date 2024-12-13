@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import ModuleItem from "@/components/courses/steps/step3/ModuleItem";
@@ -14,7 +12,6 @@ interface Step3Props {
   setModules: React.Dispatch<React.SetStateAction<ModuleDetails[]>>;
   microcredentialId: string;
   onPrevious: () => void;
-  onSubmit: () => void;
   token: string | undefined;
 }
 
@@ -23,7 +20,6 @@ const Step3: React.FC<Step3Props> = ({
   setModules,
   microcredentialId,
   onPrevious,
-  onSubmit,
   token,
 }) => {
   const [isCreating, setIsCreating] = useState(false);
@@ -77,9 +73,7 @@ const Step3: React.FC<Step3Props> = ({
     }
   };
 
-  const hasValidModules = modules.some(
-    (moduleDetails) => moduleDetails.module && moduleDetails.module.id,
-  );
+  const hasModules = modules && modules.length > 0;
 
   return (
     <>
@@ -101,30 +95,23 @@ const Step3: React.FC<Step3Props> = ({
       </div>
       {isLoadingModules ? (
         <LoadingSpinner text="Loading modules..." />
-      ) : !hasValidModules ? (
+      ) : !hasModules ? (
         <div className="text-center text-foreground font-semibold">
           No modules available
         </div>
       ) : (
-        modules
-          .filter(
-            (moduleDetails) => moduleDetails.module && moduleDetails.module.id,
-          )
-          .map((moduleDetails) => (
-            <ModuleItem
-              key={moduleDetails.module?.id}
-              moduleDetails={moduleDetails}
-              onDeleteModule={onDeleteModule}
-            />
-          ))
+        modules.map((moduleDetails) => (
+          <ModuleItem
+            key={moduleDetails._id}
+            moduleDetails={moduleDetails}
+            onDeleteModule={onDeleteModule}
+          />
+        ))
       )}
       <div className="flex space-x-4 mt-4">
         <Button type="button" variant="outline" onClick={onPrevious}>
           Previous
         </Button>
-        {/*        <Button type="button" variant="outline" onClick={onSubmit}>
-          Submit
-        </Button>*/}
       </div>
     </>
   );

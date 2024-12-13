@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,10 +29,14 @@ import FormError from "@/components/login/FormError";
 import FormSuccess from "@/components/login/FormSuccess";
 import { login } from "@/actions/login";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { Eye, EyeOff } from "lucide-react";
+
 export default function Page() {
   const [error, setError] = React.useState<string | undefined>("");
   const [success, setSuccess] = React.useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = React.useState(false);
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -40,20 +45,23 @@ export default function Page() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     startTransition(() => {
       login(values).then((response) => {
-        if (response && "error" in response) {
+        if (response?.error) {
           setError(response.error);
           setSuccess("");
-        } else if (response) {
-          setError("");
-          setSuccess(String(response.success));
         } else {
-          console.error("No response from login function.");
+          // The redirect will be handled by NextAuth
+          setError("");
+          setSuccess("Login successful!");
         }
       });
     });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -100,26 +108,39 @@ export default function Page() {
                     </FormItem>
                   )}
                   control={form.control}
-                ></FormField>
+                />
                 <FormField
                   name="password"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel htmlFor="password">Password</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          disabled={isPending}
-                          type="password"
-                          placeholder="********"
-                          required
-                        />
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            disabled={isPending}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="********"
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                   control={form.control}
-                ></FormField>
+                />
               </div>
               <FormSuccess message={success} />
               <FormError message={error} />
