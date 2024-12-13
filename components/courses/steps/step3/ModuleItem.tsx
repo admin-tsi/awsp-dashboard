@@ -242,6 +242,7 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
     );
   };
 
+  /*
   const renderExerciseSection = () => {
     if (isLoadingExercise) {
       return <LoadingSpinner text="Loading exercise..." />;
@@ -273,6 +274,7 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
       </Button>
     );
   };
+*/
 
   return (
     <Accordion type="single" collapsible>
