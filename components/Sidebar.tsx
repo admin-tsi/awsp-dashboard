@@ -34,25 +34,27 @@ export default function SideNavbar({}: Props) {
             icon: LibraryBig,
             variant: "ghost",
           },
-          {
+          /*          {
             title: "Announcement",
             href: "/announcements",
             icon: Megaphone,
             variant: "ghost",
-          },
+          },*/
+          /*
           { title: "Lives", href: "/lives", icon: Radio, variant: "ghost" },
+*/
           {
             title: "Students",
             href: "/students",
             icon: UsersRound,
             variant: "ghost",
           },
-          {
+          /*          {
             title: "Settings",
             href: "/settings",
             icon: Settings,
             variant: "ghost",
-          },
+          },*/
         ]}
       />
     </div>
