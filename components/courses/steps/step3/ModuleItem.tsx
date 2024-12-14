@@ -110,7 +110,7 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
     try {
       const newCourseData = {
         title_en: "New Course",
-        title_fr: "",
+        title_fr: "Test Course",
         description_en: "New description",
         video: "",
         courses_files: [],
