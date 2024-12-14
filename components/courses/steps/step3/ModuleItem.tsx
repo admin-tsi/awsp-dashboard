@@ -113,7 +113,7 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
         title_fr: "Test Course",
         description_en: "New description",
         description_fr: "New description",
-        video: "",
+        video: "test.mp4",
         courses_files: [],
       };
       const createdCourse = await createCourseInModule(
