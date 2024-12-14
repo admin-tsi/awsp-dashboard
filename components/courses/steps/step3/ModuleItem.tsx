@@ -112,6 +112,7 @@ const ModuleItem: React.FC<ModuleItemProps> = ({
         title_en: "New Course",
         title_fr: "Test Course",
         description_en: "New description",
+        description_fr: "New description",
         video: "",
         courses_files: [],
       };
