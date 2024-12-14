@@ -50,6 +50,7 @@ const Step3: React.FC<Step3Props> = ({
     try {
       const newModuleData = {
         title: "New Module",
+        liveDate: ["2025-07-01", "2025-07-02"],
       };
       await createModule(microcredentialId, newModuleData, token);
       await fetchModules();
